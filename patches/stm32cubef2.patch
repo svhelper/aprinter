@@ -1,0 +1,103 @@
+diff --git a/Drivers/CMSIS/Include/cmsis_gcc.h b/Drivers/CMSIS/Include/cmsis_gcc.h
+--- a/Drivers/CMSIS/Include/cmsis_gcc.h
++++ b/Drivers/CMSIS/Include/cmsis_gcc.h
+@@ -337,7 +337,11 @@
+ #if (__FPU_PRESENT == 1U) && (__FPU_USED == 1U)
+   /* Empty asm statement works as a scheduling barrier */
+   __ASM volatile ("");
++#ifdef __clang__
++  __builtin_arm_set_fpscr(fpscr);
++#else
+   __ASM volatile ("VMSR fpscr, %0" : : "r" (fpscr) : "vfpcc");
++#endif
+   __ASM volatile ("");
+ #endif
+ }
+diff --git a/Drivers/STM32F2xx_HAL_Driver/Src/stm32f2xx_ll_usb.c b/Drivers/STM32F2xx_HAL_Driver/Src/stm32f2xx_ll_usb.c
+--- a/Drivers/STM32F2xx_HAL_Driver/Src/stm32f2xx_ll_usb.c
++++ b/Drivers/STM32F2xx_HAL_Driver/Src/stm32f2xx_ll_usb.c
+@@ -55,6 +55,7 @@
+ 
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f2xx_hal.h"
++#include <string.h>
+ 
+ /** @addtogroup STM32F2xx_LL_USB_DRIVER
+   * @{
+@@ -766,7 +767,9 @@
+     count32b =  (len + 3U) / 4U;
+     for (i = 0U; i < count32b; i++, src += 4U)
+     {
+-      USBx_DFIFO(ch_ep_num) = *((__packed uint32_t *)src);
++      uint32_t val;
++      memcpy(&val, src, sizeof(val));
++      USBx_DFIFO(ch_ep_num) = val;
+     }
+   }
+   return HAL_OK;
+@@ -792,8 +795,8 @@
+   
+   for ( i = 0U; i < count32b; i++, dest += 4U )
+   {
+-    *(__packed uint32_t *)dest = USBx_DFIFO(0U);
+-    
++    uint32_t val = USBx_DFIFO(0U);
++    memcpy(dest, &val, sizeof(val));
+   }
+   return ((void *)dest);
+ }
+diff --git a/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h b/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h
+--- a/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h
++++ b/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h
+@@ -104,7 +104,7 @@
+   int8_t (* DeInit)        (void);
+   int8_t (* Control)       (uint8_t, uint8_t * , uint16_t);   
+   int8_t (* Receive)       (uint8_t *, uint32_t *);  
+-
++  void  (* TxCompleted)   (void);
+ }USBD_CDC_ItfTypeDef;
+ 
+ 
+@@ -159,6 +159,8 @@
+ uint8_t  USBD_CDC_ReceivePacket      (USBD_HandleTypeDef *pdev);
+ 
+ uint8_t  USBD_CDC_TransmitPacket     (USBD_HandleTypeDef *pdev);
++
++uint8_t  USBD_CDC_CheckTxBusy        (USBD_HandleTypeDef *pdev);
+ /**
+   * @}
+   */ 
+diff --git a/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c b/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+--- a/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
++++ b/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+@@ -669,6 +669,8 @@
+   {
+     
+     hcdc->TxState = 0;
++    
++    ((USBD_CDC_ItfTypeDef *)pdev->pUserData)->TxCompleted();
+ 
+     return USBD_OK;
+   }
+@@ -869,6 +871,21 @@
+   }
+   else
+   {
++    return USBD_FAIL;
++  }
++}
++
++
++uint8_t  USBD_CDC_CheckTxBusy(USBD_HandleTypeDef *pdev)
++{
++  USBD_CDC_HandleTypeDef   *hcdc = (USBD_CDC_HandleTypeDef*) pdev->pClassData;
++
++  if(pdev->pClassData != NULL)
++  {
++    return hcdc->TxState == 0 ? USBD_OK : USBD_BUSY;
++  }
++  else
++  {
+     return USBD_FAIL;
+   }
+ }

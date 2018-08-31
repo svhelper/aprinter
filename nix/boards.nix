@@ -90,6 +90,22 @@ rec {
         };
     };
     
+    stm32f205 = {
+        platform = "stm32f2";
+        targetVars = {
+            STM_CHIP = "stm32f205";
+            HSE_VALUE = "16000000";
+            PLL_N_VALUE = "240";
+            PLL_M_VALUE = "16";
+            PLL_P_DIV_VALUE = "2";
+            PLL_Q_DIV_VALUE = "5";
+            APB1_PRESC_DIV = "4";
+            APB2_PRESC_DIV = "2";
+            USB_MODE = "FS";
+            ENABLE_SDCARD = "YES";
+        };
+    };
+
     stm32f429 = {
         platform = "stm32f4";
         targetVars = {

@@ -168,6 +168,9 @@ function fixup_config(config) {
                     "Mk20PinInputModePullDown": {"_compoundName": "Mk20PinInputMode", "PullMode": "Pull-down"},
                     "AvrPinInputModeNormal": {"_compoundName": "AvrPinInputMode", "PullMode": "Normal"},
                     "AvrPinInputModePullUp": {"_compoundName": "AvrPinInputMode", "PullMode": "Pull-up"},
+                    "Stm32f2PinInputModeNormal": {"_compoundName": "Stm32f2PinInputMode", "PullMode": "Normal"},
+                    "Stm32f2PinInputModePullUp": {"_compoundName": "Stm32f2PinInputMode", "PullMode": "Pull-up"},
+                    "Stm32f2PinInputModePullDown": {"_compoundName": "Stm32f2PinInputMode", "PullMode": "Pull-down"},
                     "Stm32f4PinInputModeNormal": {"_compoundName": "Stm32f4PinInputMode", "PullMode": "Normal"},
                     "Stm32f4PinInputModePullUp": {"_compoundName": "Stm32f4PinInputMode", "PullMode": "Pull-up"},
                     "Stm32f4PinInputModePullDown": {"_compoundName": "Stm32f4PinInputMode", "PullMode": "Pull-down"}

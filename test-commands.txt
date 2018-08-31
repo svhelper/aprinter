@@ -12,6 +12,7 @@ nix-build nix/ -A aprinterWebif -o ~/aprinter-webif
 python -B flash.py -f ~/aprinter-build/aprinter.bin -t duet
 python -B flash.py -f ~/aprinter-build/aprinter.bin -t arduino_due
 python -B flash.py -f ~/aprinter-build/aprinter.hex -t arduino_mega
+python -B flash.py -f ~/aprinter-build/aprinter.elf -t stm32f2
 python -B flash.py -f ~/aprinter-build/aprinter.elf -t stm32f4
 python -B flash.py -f ~/aprinter-build/aprinter.hex -t teensy3
 python -B flash.py -f ~/aprinter-build/aprinter.hex -t melzi_programmer
@@ -19,6 +20,8 @@ python -B flash.py -f ~/aprinter-build/aprinter.hex -t melzi_programmer
 # OpenOCD
 # Note, if using SWO, need to actually read it.
 # For SWO you first need this: "mkfifo ~/swo".
+# STM32F2-CNC:
+openocd -f interface/stlink-v2.cfg -f target/stm32f2x_stlink.cfg -c 'tpiu config internal /home/ambro/swo uart off 168000000'
 # STM32F4-Discovery:
 openocd -f interface/stlink-v2.cfg -f target/stm32f4x_stlink.cfg -c 'tpiu config internal /home/ambro/swo uart off 168000000'
 # Teensy3 with Discovery:

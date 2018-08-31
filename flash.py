@@ -65,6 +65,14 @@ class Teensy3Type(object):
             report_error('port specification is not supported by teensy-loader-cli')
         return [['teensy-loader-cli', '-mmcu=mk20dx256', opts['image_file']]]
 
+class Stm32f2Type(object):
+    SUPPORTED_EXTENSIONS = ['.elf', '.bin']
+    
+    def flash_cmds(self, opts):
+        program_file_arg = opts['image_file']
+        address_arg = ' 0x08000000' if opts['extension'] == '.bin' else ''
+        return [['openocd', '-f', 'interface/stlink-v2.cfg', '-f', 'target/stm32f2x_stlink.cfg', '-c', 'program "{}" verify{}'.format(program_file_arg, address_arg), '-c', 'reset']]
+
 class Stm32f4Type(object):
     SUPPORTED_EXTENSIONS = ['.elf', '.bin']
     
@@ -80,6 +88,7 @@ TYPES = {
     'arduino_due': ArduinoDueType,
     'duet': DuetType,
     'teensy3': Teensy3Type,
+    'stm32f2': Stm32f2Type,
     'stm32f4': Stm32f4Type,
 }
 

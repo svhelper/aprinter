@@ -23,7 +23,7 @@
  */
 
 { stdenv, writeText, bash, gcc-arm-embedded, clang-arm-embedded, avrgcclibc
-, clang, asf, stm32cubef4, teensyCores
+, clang, asf, stm32cubef2, stm32cubef4, teensyCores
 , aprinterSource, buildVars, extraSources
 , extraIncludePaths, defines, linkerSymbols
 , mainText, boardName, buildName, desiredOutputs
@@ -68,12 +68,14 @@ let
     
     isAvr = board.platform == "avr";
     
-    isArm = builtins.elem board.platform [ "sam3x" "teensy" "stm32f4" ];
+    isArm = builtins.elem board.platform [ "sam3x" "teensy" "stm32f2" "stm32f4" ];
     
     isLinux = board.platform == "linux";
     
     needAsf = board.platform == "sam3x";
     
+    needStm32CubeF2 = board.platform == "stm32f2";
+
     needStm32CubeF4 = board.platform == "stm32f4";
     
     needTeensyCores = board.platform == "teensy";
@@ -84,6 +86,7 @@ let
         ${stdenv.lib.optionalString buildWithClang "BUILD_WITH_CLANG=1"}
         ${stdenv.lib.optionalString (buildWithClang && isArm) "CLANG_ARM_EMBEDDED=${clang-arm-embedded}/bin/"}
         ${stdenv.lib.optionalString needAsf "ASF_DIR=${asf}"}
+        ${stdenv.lib.optionalString needStm32CubeF2 "STM32CUBEF2_DIR=${stm32cubef2}"}
         ${stdenv.lib.optionalString needStm32CubeF4 "STM32CUBEF4_DIR=${stm32cubef4}"}
         ${stdenv.lib.optionalString needTeensyCores "TEENSY_CORES=${teensyCores}"}
         
@@ -105,6 +108,7 @@ assert buildWithClang -> isArm || isLinux;
 assert buildWithClang && isArm -> clang-arm-embedded != null;
 assert buildWithClang && isLinux -> clang != null;
 assert needAsf -> asf != null;
+assert needStm32CubeF2 -> stm32cubef2 != null;
 assert needStm32CubeF4 -> stm32cubef4 != null;
 assert needTeensyCores -> teensyCores != null;
 

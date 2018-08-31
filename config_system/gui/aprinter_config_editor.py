@@ -47,6 +47,9 @@ def input_mode_choice(context, **kwargs):
         ce.Compound('At91SamPinInputMode', attrs=[
             ce.String(key='PullMode', title='Pull mode', enum=['Normal', 'Pull-up']),
         ]),
+        ce.Compound('Stm32f2PinInputMode', attrs=[
+            ce.String(key='PullMode', title='Pull mode', enum=['Normal', 'Pull-up', 'Pull-down']),
+        ]),
         ce.Compound('Stm32f4PinInputMode', attrs=[
             ce.String(key='PullMode', title='Pull mode', enum=['Normal', 'Pull-up', 'Pull-down']),
         ]),
@@ -84,6 +87,11 @@ def spi_choice(**kwargs):
 
 def sdio_choice(**kwargs):
     return ce.OneOf(choices=[
+        ce.Compound('Stm32f2Sdio', attrs=[
+            ce.Boolean(key='IsWideMode', title='Data bus width', false_title='1-bit', true_title='4-bit', default=False),
+            ce.Integer(key='DataTimeoutBusClocks', title='Data timeout (in SDIO bus clocks)', default=0x20000000),
+            ce.Integer(key='SdClockPrescaler', title='SD clock prescaler for transfer', default=0),
+        ]),
         ce.Compound('Stm32f4Sdio', attrs=[
             ce.Boolean(key='IsWideMode', title='Data bus width', false_title='1-bit', true_title='4-bit', default=False),
             ce.Integer(key='DataTimeoutBusClocks', title='Data timeout (in SDIO bus clocks)', default=0x20000000),
@@ -267,6 +275,37 @@ def platform_Avr(variant):
         ]),
         ce.Compound('AvrPins', key='pins', title='Pins', collapsable=True, attrs=[
             ce.Constant(key='input_mode_type', value='AvrPinInputMode'),
+        ]),
+    ])
+
+def platform_Stm32f2():
+    return ce.Compound('Stm32f2', attrs=[
+        ce.Compound('Stm32f2Clock', key='clock', title='Clock', collapsable=True, attrs=[
+            ce.Integer(key='prescaler', title='Prescaler'),
+            ce.String(key='primary_timer', title='Primary timer'),
+            ce.Constant(key='avail_oc_units', value=[
+                {
+                    'value': 'TIM{}_{}'.format(n, m)
+                } for n in [2,3,4,5,12,13,14] for m in [1,2,3,4]
+            ])
+        ]),
+        ce.Compound('Stm32f2Adc', key='adc', title='ADC', collapsable=True, attrs=[
+            ce.Integer(key='ClockDivider'),
+            ce.Integer(key='SampleTimeSelection'),
+        ]),
+        ce.Compound('Stm32f2Watchdog', key='watchdog', title='Watchdog', collapsable=True, attrs=[
+            ce.Integer(key='Divider', title='Divider'),
+            ce.Integer(key='Reload', title='Reload'),
+        ]),
+        ce.Compound('Stm32f2Pins', key='pins', title='Pins', collapsable=True, attrs=[
+            ce.Constant(key='input_mode_type', value='Stm32f2PinInputMode'),
+        ]),
+        ce.OneOf(key='fast_clock', title='Fast clock', choices=[
+            ce.Compound('NoClock', title='Disabled', attrs=[]),
+            ce.Compound('Stm32f2Clock', key='clock', title='Enabled', attrs=[
+                ce.Integer(key='prescaler', title='Prescaler'),
+                ce.String(key='primary_timer', title='Timer'),
+            ]),
         ]),
     ])
 
@@ -718,6 +757,7 @@ def editor():
                     platform_Teensy3(),
                     platform_Avr('ATmega2560'),
                     platform_Avr('ATmega1284p'),
+                    platform_Stm32f2(),
                     platform_Stm32f4(),
                     platform_Linux(),
                 ]),
@@ -778,6 +818,7 @@ def editor():
                     ce.Compound('AvrSerial', title='AVR UART', attrs=[
                         ce.Boolean(key='DoubleSpeed'),
                     ]),
+                    ce.Compound('Stm32f2UsbSerial', title='STM32F2 USB', attrs=[]),
                     ce.Compound('Stm32f4UsbSerial', title='STM32F4 USB', attrs=[]),
                     ce.Compound('LinuxStdInOutSerial', title='Linux stdin/stdout', attrs=[]),
                     ce.Compound('NullSerial', title='Null serial driver', attrs=[]),

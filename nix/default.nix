@@ -53,6 +53,10 @@ rec {
     /* Atmel Software Framework (chip support for Atmel ARM chips). */
     asf = pkgs.callPackage ./asf.nix {};
     
+    /* STM32CubeF2 (chip support for STM32F2). */
+    stm32cubef2 = pkgs.callPackage ./stm32cubef2.nix {};
+    /* stm32cubef2 = stdenv.lib.cleanSource /home/ambro/cube/STM32Cube_FW_F2_V1.7.0; */
+    
     /* STM32CubeF4 (chip support for STM32F4). */
     stm32cubef4 = pkgs.callPackage ./stm32cubef4.nix {};
     /* stm32cubef4 = stdenv.lib.cleanSource /home/ambro/cube/STM32Cube_FW_F4_V1.5.0; */
@@ -63,7 +67,7 @@ rec {
     /* The primary APrinter build function. */    
     aprinterFunc = aprinterConfig@{ optimizeLibcForSize, ... }: pkgs.callPackage ./aprinter.nix (
         {
-            inherit aprinterSource avrgcclibc asf stm32cubef4 teensyCores;
+            inherit aprinterSource avrgcclibc asf stm32cubef2 stm32cubef4 teensyCores;
             gcc-arm-embedded = if optimizeLibcForSize then gcc-arm-embedded-fromsrc-optsize else gcc-arm-embedded-fromsrc;
             clang-arm-embedded = if optimizeLibcForSize then clang-arm-embedded-optize else clang-arm-embedded;
         } // (removeAttrs aprinterConfig ["optimizeLibcForSize"])
@@ -96,6 +100,7 @@ rec {
         asf
     ];
     buildDepsArmUncommon = [
+        stm32cubef2
         stm32cubef4
         teensyCores
         gcc-arm-embedded-fromsrc-optsize
