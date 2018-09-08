@@ -25,13 +25,13 @@
 #ifndef AMBROLIB_STM32F429I_DISCOVERY_PINS_H
 #define AMBROLIB_STM32F4DISCOVERY_PINS_H
 
-#include <aprinter/hal/stm32/Stm32f4Pins.h>
+#include <aprinter/hal/stm32/Stm32Pins.h>
 
 namespace APrinter {
 
-using DiscoveryPinLedGreen = Stm32f4Pin<Stm32f4PortG, 13>;
-using DiscoveryPinLedRed = Stm32f4Pin<Stm32f4PortG, 14>;
-using DiscoveryPinButtonUser = Stm32f4Pin<Stm32f4PortA, 0>;
+using DiscoveryPinLedGreen = Stm32Pin<Stm32PortG, 13>;
+using DiscoveryPinLedRed = Stm32Pin<Stm32PortG, 14>;
+using DiscoveryPinButtonUser = Stm32Pin<Stm32PortA, 0>;
 
 /*
 List of internally connected pins:

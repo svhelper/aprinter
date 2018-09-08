@@ -27,7 +27,7 @@
 
 #include <aprinter/base/Preprocessor.h>
 
-#include "stm32f4_support.h"
+#include "stm32_support.h"
 
 #ifdef APRINTER_ENABLE_USB
 #include <usbd_core.h>

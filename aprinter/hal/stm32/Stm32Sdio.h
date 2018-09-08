@@ -22,8 +22,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef APRINTER_STM32F4SDIO_H
-#define APRINTER_STM32F4SDIO_H
+#ifndef APRINTER_STM32SDIO_H
+#define APRINTER_STM32SDIO_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -36,14 +36,14 @@
 #include <aprinter/base/Assert.h>
 #include <aprinter/base/Hints.h>
 #include <aprinter/misc/ClockUtils.h>
-#include <aprinter/hal/stm32/Stm32f4Pins.h>
+#include <aprinter/hal/stm32/Stm32Pins.h>
 #include <aprinter/hal/generic/SdioInterface.h>
 #include <aprinter/system/InterruptLock.h>
 
 namespace APrinter {
 
 template <typename Arg>
-class Stm32f4Sdio {
+class Stm32Sdio {
     using Context        = typename Arg::Context;
     using ParentObject   = typename Arg::ParentObject;
     using CommandHandler = typename Arg::CommandHandler;
@@ -58,21 +58,21 @@ private:
     
     using TheClockUtils = ClockUtils<Context>;
     using TheDebugObject = DebugObject<Context, Object>;
-    using FastEvent = typename Context::EventLoop::template FastEventSpec<Stm32f4Sdio>;
+    using FastEvent = typename Context::EventLoop::template FastEventSpec<Stm32Sdio>;
     
     enum {INIT_STATE_OFF, INIT_STATE_POWERON, INIT_STATE_ON};
     enum {CMD_STATE_READY, CMD_STATE_BUSY, CMD_STATE_WAIT_BUSY};
     enum {DATA_STATE_READY, DATA_STATE_WAIT_COMPL, DATA_STATE_WAIT_RXTX, DATA_STATE_WAIT_DMA};
     
     static int const SdPinsAF = 12;
-    using SdPinsMode = Stm32f4PinOutputMode<Stm32f4PinOutputTypeNormal, Stm32f4PinOutputSpeedHigh, Stm32f4PinPullModePullUp>;
+    using SdPinsMode = Stm32PinOutputMode<Stm32PinOutputTypeNormal, Stm32PinOutputSpeedHigh, Stm32PinPullModePullUp>;
     
-    using SdPinCK = Stm32f4Pin<Stm32f4PortC, 12>;
-    using SdPinCmd = Stm32f4Pin<Stm32f4PortD, 2>;
-    using SdPinD0 = Stm32f4Pin<Stm32f4PortC, 8>;
-    using SdPinD1 = Stm32f4Pin<Stm32f4PortC, 9>;
-    using SdPinD2 = Stm32f4Pin<Stm32f4PortC, 10>;
-    using SdPinD3 = Stm32f4Pin<Stm32f4PortC, 11>;
+    using SdPinCK = Stm32Pin<Stm32PortC, 12>;
+    using SdPinCmd = Stm32Pin<Stm32PortD, 2>;
+    using SdPinD0 = Stm32Pin<Stm32PortC, 8>;
+    using SdPinD1 = Stm32Pin<Stm32PortC, 9>;
+    using SdPinD2 = Stm32Pin<Stm32PortC, 10>;
+    using SdPinD3 = Stm32Pin<Stm32PortC, 11>;
     
     static SDIO_TypeDef * sdio () { return SDIO; }
     
@@ -98,7 +98,7 @@ public:
             Context::Pins::template setAlternateFunction<SdPinD3,  SdPinsAF, SdPinsMode>(c);
         }
         
-        Context::EventLoop::template initFastEvent<FastEvent>(c, Stm32f4Sdio::event_handler);
+        Context::EventLoop::template initFastEvent<FastEvent>(c, Stm32Sdio::event_handler);
         
         NVIC_DisableIRQ(SDIO_IRQn);
         NVIC_SetPriority(SDIO_IRQn, INTERRUPT_PRIORITY-1);
@@ -601,7 +601,7 @@ private:
     }
     
 public:
-    struct Object : public ObjBase<Stm32f4Sdio, ParentObject, MakeTypeList<
+    struct Object : public ObjBase<Stm32Sdio, ParentObject, MakeTypeList<
         TheDebugObject
     >> {
         uint8_t init_state;
@@ -623,7 +623,7 @@ public:
     };
 };
 
-#define APRINTER_STM32F4_SDIO_GLOBAL(sdio, context) \
+#define APRINTER_STM32_SDIO_GLOBAL(sdio, context) \
 extern "C" \
 __attribute__((used)) \
 void SDIO_IRQHandler (void) \
@@ -636,7 +636,7 @@ template <
     uint32_t TDataTimeoutBusClocks,
     int TSdClockPrescaler
 >
-struct Stm32f4SdioService {
+struct Stm32SdioService {
     static bool const IsWideMode = TIsWideMode;
     static uint32_t const DataTimeoutBusClocks = TDataTimeoutBusClocks;
     static int const SdClockPrescaler = TSdClockPrescaler;
@@ -647,8 +647,8 @@ struct Stm32f4SdioService {
         APRINTER_AS_TYPE(CommandHandler),
         APRINTER_AS_TYPE(BusyTimeout)
     ), (
-        using Params = Stm32f4SdioService;
-        APRINTER_DEF_INSTANCE(Sdio, Stm32f4Sdio)
+        using Params = Stm32SdioService;
+        APRINTER_DEF_INSTANCE(Sdio, Stm32Sdio)
     ))
 };
 

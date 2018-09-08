@@ -24,30 +24,35 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # 
 #####################################################################################
-# STM32F4 SPECIFIC STUFF
+# STM32 SPECIFIC STUFF
 
-configure_stm32f4() {
+configure_stm32() {
     CMSIS_DIR=${STM32CUBEF4_DIR}/Drivers/CMSIS/Device/ST/STM32F4xx
     TEMPLATES_DIR=${CMSIS_DIR}/Source/Templates
     HAL_DIR=${STM32CUBEF4_DIR}/Drivers/STM32F4xx_HAL_Driver
     USB_DIR=${STM32CUBEF4_DIR}/Middlewares/ST/STM32_USB_Device_Library
 
-    ARM_CPU=cortex-m4
-
     if [[ $STM_CHIP = "stm32f429" ]]; then
+        ARM_CPU=cortex-m4
         CHIP_FLAGS=( -DSTM32F429xx )
-        STARTUP_ASM_FILE=startup_stm32f429xx.s
+        STARTUP_ASM_FILE=startup_stm32f4xx.s
     elif [[ $STM_CHIP = "stm32f407" ]]; then
+        ARM_CPU=cortex-m4
         CHIP_FLAGS=( -DSTM32F407xx )
-        STARTUP_ASM_FILE=startup_stm32f407xx.s
+        STARTUP_ASM_FILE=startup_stm32f4xx.s
     elif [[ $STM_CHIP = "stm32f411" ]]; then
+        ARM_CPU=cortex-m4
         CHIP_FLAGS=( -DSTM32F411xE )
-        STARTUP_ASM_FILE=startup_stm32f411xe.s
+        STARTUP_ASM_FILE=startup_stm32f4xe.s
+    elif [[ $STM_CHIP = "stm32f205" ]] || [[ $STM_CHIP = "stm32f215" ]]; then
+        ARM_CPU=cortex-m3
+        CHIP_FLAGS=( -DSTM32F405xx -DSTM32F205xx )
+        STARTUP_ASM_FILE=startup_stm32f2xx.s
     else
         fail "Unsupported STM_CHIP"
     fi
 
-    LINKER_SCRIPT=${ROOT}/aprinter/platform/stm32f4/${STM_CHIP}.ld
+    LINKER_SCRIPT=${ROOT}/aprinter/platform/stm32/${STM_CHIP}.ld
     
     configure_arm
     
@@ -63,8 +68,8 @@ configure_stm32f4() {
             "${USB_DIR}/Core/Src/usbd_ctlreq.c"
             "${USB_DIR}/Core/Src/usbd_ioreq.c"
             "${USB_DIR}/Class/CDC/Src/usbd_cdc.c"
-            "${ROOT}/aprinter/platform/stm32f4/usbd_conf.c"
-            "${ROOT}/aprinter/platform/stm32f4/usbd_desc.c"
+            "${ROOT}/aprinter/platform/stm32/usbd_conf.c"
+            "${ROOT}/aprinter/platform/stm32/usbd_desc.c"
         )
         
         if [[ $USB_MODE = "FS" ]]; then
@@ -86,9 +91,12 @@ configure_stm32f4() {
         )
     fi
     
-    FLAGS_C_CXX_LD+=(
-        -mfpu=fpv4-sp-d16 -mfloat-abi=hard
-    )
+    if [[ $ARM_CPU = "cortex-m4" ]]; then
+        FLAGS_C_CXX_LD+=(
+            -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+        )
+    fi
+
     FLAGS_C_CXX+=(
         "${CHIP_FLAGS[@]}"
         -DUSE_HAL_DRIVER -DHEAP_SIZE=16384
@@ -96,7 +104,7 @@ configure_stm32f4() {
         -DPLL_P_DIV_VALUE=${PLL_P_DIV_VALUE} -DPLL_Q_DIV_VALUE=${PLL_Q_DIV_VALUE}
         -DAPB1_PRESC_DIV=${APB1_PRESC_DIV} -DAPB2_PRESC_DIV=${APB2_PRESC_DIV}
         "${USB_FLAGS[@]}"
-        -I "${ROOT}/aprinter/platform/stm32f4"
+        -I "${ROOT}/aprinter/platform/stm32"
         -I "${CMSIS_DIR}/Include"
         -I "${STM32CUBEF4_DIR}/Drivers/CMSIS/Include"
         -I "${HAL_DIR}/Inc"
@@ -105,7 +113,7 @@ configure_stm32f4() {
     )
     
     CXX_SOURCES+=(
-        "${ROOT}/aprinter/platform/stm32f4/stm32f4_support.cpp"
+        "${ROOT}/aprinter/platform/stm32/stm32_support.cpp"
     )
     C_SOURCES+=(
         "${TEMPLATES_DIR}/system_stm32f4xx.c"
@@ -119,19 +127,19 @@ configure_stm32f4() {
         "${USB_C_SOURCES[@]}" "${SDCARD_C_SOURCES[@]}"
     )
     ASM_SOURCES+=(
-        "${TEMPLATES_DIR}/gcc/${STARTUP_ASM_FILE}"
+        "${ROOT}/aprinter/platform/stm32/${STARTUP_ASM_FILE}"
     )
 
     # define target functions
-    RUNBUILD=build_stm32f4
-    CHECK=check_depends_stm32f4
+    RUNBUILD=build_stm32
+    CHECK=check_depends_stm32
 }
 
-build_stm32f4() {
+build_stm32() {
     build_arm
 }
 
-check_depends_stm32f4() {
+check_depends_stm32() {
     check_depends_arm
-    [ -d "${STM32CUBEF4_DIR}" ] || fail "STM32F4 framework missing in dependences"
+    [ -d "${STM32CUBEF4_DIR}" ] || fail "STM32 framework missing in dependences"
 }

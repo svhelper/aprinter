@@ -68,13 +68,13 @@ let
     
     isAvr = board.platform == "avr";
     
-    isArm = builtins.elem board.platform [ "sam3x" "teensy" "stm32f4" ];
+    isArm = builtins.elem board.platform [ "sam3x" "teensy" "stm32" ];
     
     isLinux = board.platform == "linux";
     
     needAsf = board.platform == "sam3x";
     
-    needStm32CubeF4 = board.platform == "stm32f4";
+    needStm32CubeF4 = board.platform == "stm32";
     
     needTeensyCores = board.platform == "teensy";
     

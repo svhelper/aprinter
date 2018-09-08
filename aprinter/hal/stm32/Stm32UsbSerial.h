@@ -22,8 +22,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef APRINTER_STM32F4_USB_SERIAL_H
-#define APRINTER_STM32F4_USB_SERIAL_H
+#ifndef APRINTER_STM32_USB_SERIAL_H
+#define APRINTER_STM32_USB_SERIAL_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -43,9 +43,9 @@
 namespace APrinter {
 
 template <typename Context, typename ParentObject, int RecvBufferBits, int SendBufferBits, typename RecvHandler, typename SendHandler, typename Params>
-class Stm32f4UsbSerial {
+class Stm32UsbSerial {
 private:
-    using RecvFastEvent = typename Context::EventLoop::template FastEventSpec<Stm32f4UsbSerial>;
+    using RecvFastEvent = typename Context::EventLoop::template FastEventSpec<Stm32UsbSerial>;
     using SendFastEvent = typename Context::EventLoop::template FastEventSpec<RecvFastEvent>;
     
 public:
@@ -68,13 +68,13 @@ public:
     {
         auto *o = Object::self(c);
         
-        Context::EventLoop::template initFastEvent<RecvFastEvent>(c, Stm32f4UsbSerial::recv_event_handler);
+        Context::EventLoop::template initFastEvent<RecvFastEvent>(c, Stm32UsbSerial::recv_event_handler);
         o->m_recv_start = RecvSizeType::import(0);
         o->m_recv_end = RecvSizeType::import(0);
         o->m_recv_force = false;
         o->m_recv_rx_active = true;
         
-        Context::EventLoop::template initFastEvent<SendFastEvent>(c, Stm32f4UsbSerial::send_event_handler);
+        Context::EventLoop::template initFastEvent<SendFastEvent>(c, Stm32UsbSerial::send_event_handler);
         o->m_send_start = SendSizeType::import(0);
         o->m_send_end = SendSizeType::import(0);
         o->m_send_event = SendSizeType::import(0);
@@ -85,11 +85,11 @@ public:
         o->m_line_coding.paritytype = 0;
         o->m_line_coding.datatype = 8;
         
-        o->m_cdc_ops.Init =        Stm32f4UsbSerial::cdc_cb_init;
-        o->m_cdc_ops.DeInit =      Stm32f4UsbSerial::cdc_cb_deinit;
-        o->m_cdc_ops.Control =     Stm32f4UsbSerial::cdc_cb_control;
-        o->m_cdc_ops.Receive =     Stm32f4UsbSerial::cdc_cb_receive;
-        o->m_cdc_ops.TxCompleted = Stm32f4UsbSerial::cdc_cb_tx_completed;
+        o->m_cdc_ops.Init =        Stm32UsbSerial::cdc_cb_init;
+        o->m_cdc_ops.DeInit =      Stm32UsbSerial::cdc_cb_deinit;
+        o->m_cdc_ops.Control =     Stm32UsbSerial::cdc_cb_control;
+        o->m_cdc_ops.Receive =     Stm32UsbSerial::cdc_cb_receive;
+        o->m_cdc_ops.TxCompleted = Stm32UsbSerial::cdc_cb_tx_completed;
         
         if (USBD_RegisterClass(&USBD_Device, USBD_CDC_CLASS) != USBD_OK) {
             AMBRO_ASSERT_ABORT("USBD_RegisterClass failed");
@@ -350,7 +350,7 @@ private:
     }
     
 public:
-    struct Object : public ObjBase<Stm32f4UsbSerial, ParentObject, MakeTypeList<TheDebugObject>> {
+    struct Object : public ObjBase<Stm32UsbSerial, ParentObject, MakeTypeList<TheDebugObject>> {
         RecvSizeType m_recv_start;
         RecvSizeType m_recv_end;
         bool m_recv_force;
@@ -370,9 +370,9 @@ public:
     };
 };
 
-struct Stm32f4UsbSerialService {
+struct Stm32UsbSerialService {
     template <typename Context, typename ParentObject, int RecvBufferBits, int SendBufferBits, typename RecvHandler, typename SendHandler>
-    using Serial = Stm32f4UsbSerial<Context, ParentObject, RecvBufferBits, SendBufferBits, RecvHandler, SendHandler, Stm32f4UsbSerialService>;
+    using Serial = Stm32UsbSerial<Context, ParentObject, RecvBufferBits, SendBufferBits, RecvHandler, SendHandler, Stm32UsbSerialService>;
 };
 
 }

@@ -168,9 +168,9 @@ function fixup_config(config) {
                     "Mk20PinInputModePullDown": {"_compoundName": "Mk20PinInputMode", "PullMode": "Pull-down"},
                     "AvrPinInputModeNormal": {"_compoundName": "AvrPinInputMode", "PullMode": "Normal"},
                     "AvrPinInputModePullUp": {"_compoundName": "AvrPinInputMode", "PullMode": "Pull-up"},
-                    "Stm32f4PinInputModeNormal": {"_compoundName": "Stm32f4PinInputMode", "PullMode": "Normal"},
-                    "Stm32f4PinInputModePullUp": {"_compoundName": "Stm32f4PinInputMode", "PullMode": "Pull-up"},
-                    "Stm32f4PinInputModePullDown": {"_compoundName": "Stm32f4PinInputMode", "PullMode": "Pull-down"}
+                    "Stm32PinInputModeNormal": {"_compoundName": "Stm32PinInputMode", "PullMode": "Normal"},
+                    "Stm32PinInputModePullUp": {"_compoundName": "Stm32PinInputMode", "PullMode": "Pull-up"},
+                    "Stm32PinInputModePullDown": {"_compoundName": "Stm32PinInputMode", "PullMode": "Pull-down"}
                 };
                 if (JSONEditor_utils.has(input_modes_conversion, digital_input["InputMode"])) {
                     digital_input["InputMode"] = input_modes_conversion[digital_input["InputMode"]];

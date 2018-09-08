@@ -436,9 +436,9 @@ def setup_platform(gen, config, key):
         gen.add_platform_include('aprinter/platform/avr/avr_support.h')
         gen.add_init_call(-3, 'sei();')
     
-    @platform_sel.option('Stm32f4')
+    @platform_sel.option('Stm32')
     def option(platform):
-        gen.add_platform_include('aprinter/platform/stm32f4/stm32f4_support.h')
+        gen.add_platform_include('aprinter/platform/stm32/stm32_support.h')
         gen.add_init_call(-1, 'platform_init();')
         gen.add_final_init_call(-1, 'platform_init_final();')
         gen.register_singleton_object('checksum_src_file', arm_checksum_src_file)
@@ -607,15 +607,15 @@ def AvrClockDef(x):
             timer_config.do_selection('Mode', mode_sel),
         ])
 
-def Stm32f4ClockDef(x):
-    x.INCLUDE = 'hal/stm32/Stm32f4Clock.h'
-    x.CLOCK_SERVICE = lambda config: TemplateExpr('Stm32f4ClockService', [config.get_int_constant('prescaler')])
+def Stm32ClockDef(x):
+    x.INCLUDE = 'hal/stm32/Stm32Clock.h'
+    x.CLOCK_SERVICE = lambda config: TemplateExpr('Stm32ClockService', [config.get_int_constant('prescaler')])
     x.TIMER_RE = '\\ATIM([0-9]{1,2})\\Z'
     x.CHANNEL_RE = '\\ATIM([0-9]{1,2})_([1-4])\\Z'
-    x.INTERRUPT_TIMER_EXPR = lambda it, clearance: 'Stm32f4ClockInterruptTimerService<Stm32f4ClockTIM{}, Stm32f4ClockComp{}, {}>'.format(it['tc'], it['channel'], clearance)
-    x.INTERRUPT_TIMER_ISR = lambda it, user: 'AMBRO_STM32F4_CLOCK_INTERRUPT_TIMER_GLOBAL(Stm32f4ClockTIM{}, Stm32f4ClockComp{}, {}, Context())'.format(it['tc'], it['channel'], user)
-    x.TIMER_EXPR = lambda tc: 'Stm32f4ClockTIM{}'.format(tc)
-    x.TIMER_ISR = lambda my_clock, tc: 'AMBRO_STM32F4_CLOCK_TC_GLOBAL({}, {}, Context())'.format(tc, my_clock)
+    x.INTERRUPT_TIMER_EXPR = lambda it, clearance: 'Stm32ClockInterruptTimerService<Stm32ClockTIM{}, Stm32ClockComp{}, {}>'.format(it['tc'], it['channel'], clearance)
+    x.INTERRUPT_TIMER_ISR = lambda it, user: 'AMBRO_STM32_CLOCK_INTERRUPT_TIMER_GLOBAL(Stm32ClockTIM{}, Stm32ClockComp{}, {}, Context())'.format(it['tc'], it['channel'], user)
+    x.TIMER_EXPR = lambda tc: 'Stm32ClockTIM{}'.format(tc)
+    x.TIMER_ISR = lambda my_clock, tc: 'AMBRO_STM32_CLOCK_TC_GLOBAL({}, {}, Context())'.format(tc, my_clock)
 
 def LinuxClockDef(x):
     x.INCLUDE = 'hal/linux/LinuxClock.h'
@@ -651,9 +651,9 @@ def setup_clock(gen, config, key, clock_name, priority, allow_disabled):
     def option(clock):
         return CommonClock(gen, clock, clock_name, priority, AvrClockDef)
     
-    @clock_sel.option('Stm32f4Clock')
+    @clock_sel.option('Stm32Clock')
     def option(clock):
-        return CommonClock(gen, clock, clock_name, priority, Stm32f4ClockDef)
+        return CommonClock(gen, clock, clock_name, priority, Stm32ClockDef)
     
     @clock_sel.option('LinuxClock')
     def option(clock):
@@ -704,11 +704,11 @@ def setup_pins (gen, config, key):
         pin_regexes.append('\\AAvrPin<AvrPort[A-Z],[0-9]{1,3}>\\Z')
         return TemplateLiteral('AvrPinsService')
     
-    @pins_sel.option('Stm32f4Pins')
+    @pins_sel.option('Stm32Pins')
     def options(pin_config):
-        gen.add_aprinter_include('hal/stm32/Stm32f4Pins.h')
-        pin_regexes.append('\\AStm32f4Pin<Stm32f4Port[A-Z],[0-9]{1,3}>\\Z')
-        return TemplateLiteral('Stm32f4PinsService')
+        gen.add_aprinter_include('hal/stm32/Stm32Pins.h')
+        pin_regexes.append('\\AStm32Pin<Stm32Port[A-Z],[0-9]{1,3}>\\Z')
+        return TemplateLiteral('Stm32PinsService')
     
     @pins_sel.option('StubPins')
     def options(pin_config):
@@ -758,10 +758,10 @@ def setup_watchdog (gen, config, key, user):
         gen.add_isr('AMBRO_AVR_WATCHDOG_GLOBAL')
         return TemplateExpr('AvrWatchdogService', [wdto])
     
-    @watchdog_sel.option('Stm32f4Watchdog')
+    @watchdog_sel.option('Stm32Watchdog')
     def option(watchdog):
-        gen.add_aprinter_include('hal/stm32/Stm32f4Watchdog.h')
-        return TemplateExpr('Stm32f4WatchdogService', [
+        gen.add_aprinter_include('hal/stm32/Stm32Watchdog.h')
+        return TemplateExpr('Stm32WatchdogService', [
             watchdog.get_int('Divider'),
             watchdog.get_int('Reload'),
         ])
@@ -842,13 +842,13 @@ def setup_adc (gen, config, key):
             'pin_func': lambda pin: pin
         }
     
-    @adc_sel.option('Stm32f4Adc')
+    @adc_sel.option('Stm32Adc')
     def option(adc_config):
-        gen.add_aprinter_include('hal/stm32/Stm32f4Adc.h')
-        gen.add_isr('APRINTER_STM32F4_ADC_GLOBAL(MyAdc, Context())')
+        gen.add_aprinter_include('hal/stm32/Stm32Adc.h')
+        gen.add_isr('APRINTER_STM32_ADC_GLOBAL(MyAdc, Context())')
         
         return {
-            'service_expr': TemplateExpr('Stm32f4AdcService', [
+            'service_expr': TemplateExpr('Stm32AdcService', [
                 adc_config.get_int('ClockDivider'),
                 adc_config.get_int('SampleTimeSelection'),
             ]),
@@ -901,10 +901,10 @@ def use_input_mode (config, key):
             im_config.do_enum('PullMode', {'Normal': 'At91SamPinPullModeNormal', 'Pull-up': 'At91SamPinPullModePullUp'}),
         ])
     
-    @im_sel.option('Stm32f4PinInputMode')
+    @im_sel.option('Stm32PinInputMode')
     def option(im_config):
-        return TemplateExpr('Stm32f4PinInputMode', [
-            im_config.do_enum('PullMode', {'Normal': 'Stm32f4PinPullModeNone', 'Pull-up': 'Stm32f4PinPullModePullUp', 'Pull-down': 'Stm32f4PinPullModePullDown'}),
+        return TemplateExpr('Stm32PinInputMode', [
+            im_config.do_enum('PullMode', {'Normal': 'Stm32PinPullModeNone', 'Pull-up': 'Stm32PinPullModePullUp', 'Pull-down': 'Stm32PinPullModePullDown'}),
         ])
     
     @im_sel.option('AvrPinInputMode')
@@ -1047,11 +1047,11 @@ def use_spi (gen, config, key, user):
 def use_sdio (gen, config, key, user):
     sdio_sel = selection.Selection()
     
-    @sdio_sel.option('Stm32f4Sdio')
+    @sdio_sel.option('Stm32Sdio')
     def option(sdio_config):
-        gen.add_aprinter_include('hal/stm32/Stm32f4Sdio.h')
-        gen.add_isr('APRINTER_STM32F4_SDIO_GLOBAL({}, Context())'.format(user))
-        return TemplateExpr('Stm32f4SdioService', [
+        gen.add_aprinter_include('hal/stm32/Stm32Sdio.h')
+        gen.add_isr('APRINTER_STM32_SDIO_GLOBAL({}, Context())'.format(user))
+        return TemplateExpr('Stm32SdioService', [
             sdio_config.get_bool('IsWideMode'),
             sdio_config.get_int('DataTimeoutBusClocks'),
             sdio_config.get_int('SdClockPrescaler'),
@@ -1167,10 +1167,10 @@ def use_serial(gen, config, key, user):
         gen.add_init_call(-2, 'aprinter_init_avr_debug_write();')
         return TemplateExpr('AvrSerialService', [serial_service.get_bool('DoubleSpeed')])
     
-    @serial_sel.option('Stm32f4UsbSerial')
+    @serial_sel.option('Stm32UsbSerial')
     def option(serial_service):
-        gen.add_aprinter_include('hal/stm32/Stm32f4UsbSerial.h')
-        return 'Stm32f4UsbSerialService'
+        gen.add_aprinter_include('hal/stm32/Stm32UsbSerial.h')
+        return 'Stm32UsbSerialService'
     
     @serial_sel.option('LinuxStdInOutSerial')
     def option(serial_service):

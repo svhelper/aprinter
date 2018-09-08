@@ -25,7 +25,9 @@
 #ifndef APRINTER_PREPROCESSOR_H
 #define APRINTER_PREPROCESSOR_H
 
-#define APRINTER_JOIN_HELPER(x, y) x##y
+#define APRINTER_JOIN_HELPER2(x, y) x##y
+#define APRINTER_JOIN_HELPER1(x, y) APRINTER_JOIN_HELPER2(x, y)
+#define APRINTER_JOIN_HELPER(x, y)  APRINTER_JOIN_HELPER1(x, y)
 #define APRINTER_JOIN(x, y) APRINTER_JOIN_HELPER(x, y)
 
 #define AMBRO_STRINGIFY_HELPER(x) #x
@@ -34,6 +36,18 @@
 #define APRINTER_REMOVE_PARENS(...) __VA_ARGS__
 
 #define APRINTER_ARRAY_LEN(arr) (sizeof(arr) / sizeof((arr)[0]))
+
+
+#define APRINTER_HASPAREN(definition)     APRINTER_HASPAREN1(definition)
+#define APRINTER_HASPAREN_HELPER(...)     0,
+#define APRINTER_HASPAREN1(definition)    APRINTER_HASPAREN2(APRINTER_HASPAREN_HELPER definition)
+#define APRINTER_HASPAREN2(comma_or_junk) APRINTER_HASPAREN3(comma_or_junk YES, NO)
+#define APRINTER_HASPAREN3(ignore, check, ...) check
+
+#define APRINTER_IF_DEFINED_NO(...)
+#define APRINTER_IF_DEFINED_YES(...)  __VA_ARGS__
+#define APRINTER_IF_DEFINED(deinition) APRINTER_JOIN(APRINTER_IF_DEFINED_, APRINTER_HASPAREN(deinition))
+
 
 #include "Preprocessor_MacroMap.h"
 

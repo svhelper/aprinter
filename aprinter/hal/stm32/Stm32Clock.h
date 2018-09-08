@@ -22,8 +22,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef AMBROLIB_STM32F4_CLOCK_H
-#define AMBROLIB_STM32F4_CLOCK_H
+#ifndef AMBROLIB_STM32_CLOCK_H
+#define AMBROLIB_STM32_CLOCK_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -44,59 +44,59 @@
 #include <aprinter/system/InterruptLock.h>
 
 template <typename TcSpec, typename Comp>
-struct Stm32f4Clock__IrqCompHelper {
+struct Stm32Clock__IrqCompHelper {
     static void call () {}
 };
 
 namespace APrinter {
 
-using Stm32f4ClockDefaultExtraClearance = AMBRO_WRAP_DOUBLE(0.0);
+using Stm32ClockDefaultExtraClearance = AMBRO_WRAP_DOUBLE(0.0);
 
-#define STM32F4CLOCK_DEFINE_TC(tc_num, is_32bit, clock_type) \
-struct Stm32f4ClockTIM##tc_num { \
+#define STM32CLOCK_DEFINE_TC(tc_num, is_32bit, clock_type) \
+struct Stm32ClockTIM##tc_num { \
     static bool const Is32Bit = is_32bit; \
     static TIM_TypeDef * tim () { return TIM##tc_num; } \
     static int const ClockType = clock_type; \
     static void enable_clock () { __HAL_RCC_TIM##tc_num##_CLK_ENABLE(); } \
     static void disable_clock () { __HAL_RCC_TIM##tc_num##_CLK_DISABLE(); } \
-    static IRQn_Type const Irq = APRINTER_JOIN(STM32F4CLOCK_IRQ_FOR_TIM##tc_num, IRQn); \
+    static IRQn_Type const Irq = APRINTER_JOIN(STM32CLOCK_IRQ_FOR_TIM##tc_num, IRQn); \
 };
 
 // Note: these have _ at the end so that TIMn macros don't get in the way.
-#define STM32F4CLOCK_IRQ_FOR_TIM1 TIM1_CC_
-#define STM32F4CLOCK_IRQ_FOR_TIM2 TIM2_
-#define STM32F4CLOCK_IRQ_FOR_TIM3 TIM3_
-#define STM32F4CLOCK_IRQ_FOR_TIM4 TIM4_
-#define STM32F4CLOCK_IRQ_FOR_TIM5 TIM5_
-#define STM32F4CLOCK_IRQ_FOR_TIM8 TIM8_CC_
-#define STM32F4CLOCK_IRQ_FOR_TIM9 TIM1_BRK_TIM9_
-#define STM32F4CLOCK_IRQ_FOR_TIM10 TIM1_UP_TIM10_
-#define STM32F4CLOCK_IRQ_FOR_TIM11 TIM1_TRG_COM_TIM11_
+#define STM32CLOCK_IRQ_FOR_TIM1 TIM1_CC_
+#define STM32CLOCK_IRQ_FOR_TIM2 TIM2_
+#define STM32CLOCK_IRQ_FOR_TIM3 TIM3_
+#define STM32CLOCK_IRQ_FOR_TIM4 TIM4_
+#define STM32CLOCK_IRQ_FOR_TIM5 TIM5_
+#define STM32CLOCK_IRQ_FOR_TIM8 TIM8_CC_
+#define STM32CLOCK_IRQ_FOR_TIM9 TIM1_BRK_TIM9_
+#define STM32CLOCK_IRQ_FOR_TIM10 TIM1_UP_TIM10_
+#define STM32CLOCK_IRQ_FOR_TIM11 TIM1_TRG_COM_TIM11_
 #ifndef STM32F411xE
-#define STM32F4CLOCK_IRQ_FOR_TIM12 TIM8_BRK_TIM12_
-#define STM32F4CLOCK_IRQ_FOR_TIM13 TIM8_UP_TIM13_
-#define STM32F4CLOCK_IRQ_FOR_TIM14 TIM8_TRG_COM_TIM14_
+#define STM32CLOCK_IRQ_FOR_TIM12 TIM8_BRK_TIM12_
+#define STM32CLOCK_IRQ_FOR_TIM13 TIM8_UP_TIM13_
+#define STM32CLOCK_IRQ_FOR_TIM14 TIM8_TRG_COM_TIM14_
 #endif
 
 // Some timers we don't support:
 // - APB2 timers, because they are based on a different clock (could try prescaler adjustment).
-//STM32F4CLOCK_DEFINE_TC(1,  false, 2)
-STM32F4CLOCK_DEFINE_TC(2,  true,  1)
-STM32F4CLOCK_DEFINE_TC(3,  false, 1)
-STM32F4CLOCK_DEFINE_TC(4,  false, 1)
-STM32F4CLOCK_DEFINE_TC(5,  true,  1)
-//STM32F4CLOCK_DEFINE_TC(8,  false, 2)
-//STM32F4CLOCK_DEFINE_TC(9,  false, 2)
-//STM32F4CLOCK_DEFINE_TC(10, false, 2)
-//STM32F4CLOCK_DEFINE_TC(11, false, 2)
+//STM32CLOCK_DEFINE_TC(1,  false, 2)
+STM32CLOCK_DEFINE_TC(2,  true,  1)
+STM32CLOCK_DEFINE_TC(3,  false, 1)
+STM32CLOCK_DEFINE_TC(4,  false, 1)
+STM32CLOCK_DEFINE_TC(5,  true,  1)
+//STM32CLOCK_DEFINE_TC(8,  false, 2)
+//STM32CLOCK_DEFINE_TC(9,  false, 2)
+//STM32CLOCK_DEFINE_TC(10, false, 2)
+//STM32CLOCK_DEFINE_TC(11, false, 2)
 #ifndef STM32F411xE
-STM32F4CLOCK_DEFINE_TC(12, false, 1)
-STM32F4CLOCK_DEFINE_TC(13, false, 1)
-STM32F4CLOCK_DEFINE_TC(14, false, 1)
+STM32CLOCK_DEFINE_TC(12, false, 1)
+STM32CLOCK_DEFINE_TC(13, false, 1)
+STM32CLOCK_DEFINE_TC(14, false, 1)
 #endif 
 
-#define STM32F4CLOCK_DEFINE_COMP(comp_num, ccmr_num, ccmr_bit_offset, ccer_bit_offset, ccie_bit, if_bit) \
-struct Stm32f4ClockComp##comp_num { \
+#define STM32CLOCK_DEFINE_COMP(comp_num, ccmr_num, ccmr_bit_offset, ccer_bit_offset, ccie_bit, if_bit) \
+struct Stm32ClockComp##comp_num { \
     static uint32_t volatile * ccmr (TIM_TypeDef *tim) { return &tim->CCMR##ccmr_num; } \
     static int const CcmrBitOffset = ccmr_bit_offset; \
     static int const CcerBitOffset = ccer_bit_offset; \
@@ -105,13 +105,13 @@ struct Stm32f4ClockComp##comp_num { \
     static uint32_t const IfBit = if_bit; \
 };
 
-STM32F4CLOCK_DEFINE_COMP(1, 1, 0, 0,  TIM_DIER_CC1IE, TIM_SR_CC1IF)
-STM32F4CLOCK_DEFINE_COMP(2, 1, 8, 4,  TIM_DIER_CC2IE, TIM_SR_CC2IF)
-STM32F4CLOCK_DEFINE_COMP(3, 2, 0, 8,  TIM_DIER_CC3IE, TIM_SR_CC3IF)
-STM32F4CLOCK_DEFINE_COMP(4, 2, 8, 12, TIM_DIER_CC4IE, TIM_SR_CC4IF)
+STM32CLOCK_DEFINE_COMP(1, 1, 0, 0,  TIM_DIER_CC1IE, TIM_SR_CC1IF)
+STM32CLOCK_DEFINE_COMP(2, 1, 8, 4,  TIM_DIER_CC2IE, TIM_SR_CC2IF)
+STM32CLOCK_DEFINE_COMP(3, 2, 0, 8,  TIM_DIER_CC3IE, TIM_SR_CC3IF)
+STM32CLOCK_DEFINE_COMP(4, 2, 8, 12, TIM_DIER_CC4IE, TIM_SR_CC4IF)
 
 template <typename Arg>
-class Stm32f4Clock {
+class Stm32Clock {
     using Context      = typename Arg::Context;
     using ParentObject = typename Arg::ParentObject;
     using TcsList      = typename Arg::TcsList;
@@ -180,10 +180,10 @@ private:
             // Ack interrupts.
             TcSpec::tim()->SR = 0;
             
-            Stm32f4Clock__IrqCompHelper<TcSpec, Stm32f4ClockComp1>::call();
-            Stm32f4Clock__IrqCompHelper<TcSpec, Stm32f4ClockComp2>::call();
-            Stm32f4Clock__IrqCompHelper<TcSpec, Stm32f4ClockComp3>::call();
-            Stm32f4Clock__IrqCompHelper<TcSpec, Stm32f4ClockComp4>::call();
+            Stm32Clock__IrqCompHelper<TcSpec, Stm32ClockComp1>::call();
+            Stm32Clock__IrqCompHelper<TcSpec, Stm32ClockComp2>::call();
+            Stm32Clock__IrqCompHelper<TcSpec, Stm32ClockComp3>::call();
+            Stm32Clock__IrqCompHelper<TcSpec, Stm32ClockComp4>::call();
         }
     };
     
@@ -226,10 +226,10 @@ public:
     }
     
 public:
-    struct Object : public ObjBase<Stm32f4Clock, ParentObject, MakeTypeList<TheDebugObject>> {};
+    struct Object : public ObjBase<Stm32Clock, ParentObject, MakeTypeList<TheDebugObject>> {};
 };
 
-APRINTER_ALIAS_STRUCT_EXT(Stm32f4ClockService, (
+APRINTER_ALIAS_STRUCT_EXT(Stm32ClockService, (
     APRINTER_AS_VALUE(uint16_t, Prescale)
 ), (
     APRINTER_ALIAS_STRUCT_EXT(Clock, (
@@ -237,21 +237,21 @@ APRINTER_ALIAS_STRUCT_EXT(Stm32f4ClockService, (
         APRINTER_AS_TYPE(ParentObject),
         APRINTER_AS_TYPE(TcsList)
     ), (
-        using Params = Stm32f4ClockService;
-        APRINTER_DEF_INSTANCE(Clock, Stm32f4Clock)
+        using Params = Stm32ClockService;
+        APRINTER_DEF_INSTANCE(Clock, Stm32Clock)
     ))
 ))
 
-#define AMBRO_STM32F4_CLOCK_TC_GLOBAL(tc_num, clock, context) \
+#define AMBRO_STM32_CLOCK_TC_GLOBAL(tc_num, clock, context) \
 extern "C" \
 __attribute__((used)) \
-void APRINTER_JOIN(STM32F4CLOCK_IRQ_FOR_TIM##tc_num, IRQHandler) (void) \
+void APRINTER_JOIN(STM32CLOCK_IRQ_FOR_TIM##tc_num, IRQHandler) (void) \
 { \
-    clock::tc_irq_handler<Stm32f4ClockTIM##tc_num>(MakeInterruptContext((context))); \
+    clock::tc_irq_handler<Stm32ClockTIM##tc_num>(MakeInterruptContext((context))); \
 }
 
 template <typename Arg>
-class Stm32f4ClockInterruptTimer {
+class Stm32ClockInterruptTimer {
     using Context      = typename Arg::Context;
     using ParentObject = typename Arg::ParentObject;
     using Handler      = typename Arg::Handler;
@@ -408,7 +408,7 @@ private:
     static const TimeType clearance = MaxValue<TimeType>((64 / Clock::prescale_divide) + 2, ExtraClearance::value() * Clock::time_freq);
     
 public:
-    struct Object : public ObjBase<Stm32f4ClockInterruptTimer, ParentObject, MakeTypeList<TheDebugObject>> {
+    struct Object : public ObjBase<Stm32ClockInterruptTimer, ParentObject, MakeTypeList<TheDebugObject>> {
         TimeType m_time;
 #ifdef AMBROLIB_ASSERTIONS
         bool m_running;
@@ -416,7 +416,7 @@ public:
     };
 };
 
-APRINTER_ALIAS_STRUCT_EXT(Stm32f4ClockInterruptTimerService, (
+APRINTER_ALIAS_STRUCT_EXT(Stm32ClockInterruptTimerService, (
     APRINTER_AS_TYPE(Tc),
     APRINTER_AS_TYPE(Comp),
     APRINTER_AS_TYPE(ExtraClearance)
@@ -426,19 +426,19 @@ APRINTER_ALIAS_STRUCT_EXT(Stm32f4ClockInterruptTimerService, (
         APRINTER_AS_TYPE(ParentObject),
         APRINTER_AS_TYPE(Handler)
     ), (
-        using Params = Stm32f4ClockInterruptTimerService;
-        APRINTER_DEF_INSTANCE(InterruptTimer, Stm32f4ClockInterruptTimer)
+        using Params = Stm32ClockInterruptTimerService;
+        APRINTER_DEF_INSTANCE(InterruptTimer, Stm32ClockInterruptTimer)
     ))
 ))
 
-#define AMBRO_STM32F4_CLOCK_INTERRUPT_TIMER_GLOBAL(tcspec, comp, timer, context) \
+#define AMBRO_STM32_CLOCK_INTERRUPT_TIMER_GLOBAL(tcspec, comp, timer, context) \
 static_assert( \
     TypesAreEqual<timer::TcSpec, tcspec>::Value && \
     TypesAreEqual<timer::Comp, comp>::Value, \
     "Incorrect INTERRUPT_TIMER_GLOBA macro used" \
 ); \
 template <> \
-struct Stm32f4Clock__IrqCompHelper<tcspec, comp> { \
+struct Stm32Clock__IrqCompHelper<tcspec, comp> { \
     static void call () \
     { \
         timer::irq_handler(MakeInterruptContext((context))); \

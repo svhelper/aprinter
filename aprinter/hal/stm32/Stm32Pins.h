@@ -22,8 +22,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef AMBROLIB_STM32F4_PINS_H
-#define AMBROLIB_STM32F4_PINS_H
+#ifndef AMBROLIB_STM32_PINS_H
+#define AMBROLIB_STM32_PINS_H
 
 #include <stdint.h>
 
@@ -36,81 +36,71 @@
 namespace APrinter {
 
 template <uint32_t TGpioAddr>
-struct Stm32f4Port {
+struct Stm32Port {
     static GPIO_TypeDef * gpio () { return (GPIO_TypeDef *)TGpioAddr; }
 };
 
-using Stm32f4PortA = Stm32f4Port<GPIOA_BASE>;
-using Stm32f4PortB = Stm32f4Port<GPIOB_BASE>;
-using Stm32f4PortC = Stm32f4Port<GPIOC_BASE>;
-using Stm32f4PortD = Stm32f4Port<GPIOD_BASE>;
-using Stm32f4PortE = Stm32f4Port<GPIOE_BASE>;
-#ifdef GPIOF
-using Stm32f4PortF = Stm32f4Port<GPIOF_BASE>;
-#endif
-#ifdef GPIOG
-using Stm32f4PortG = Stm32f4Port<GPIOG_BASE>;
-#endif
-using Stm32f4PortH = Stm32f4Port<GPIOH_BASE>;
-#ifdef GPIOI
-using Stm32f4PortI = Stm32f4Port<GPIOI_BASE>;
-#endif
-#ifdef GPIOJ
-using Stm32f4PortJ = Stm32f4Port<GPIOJ_BASE>;
-#endif
-#ifdef GPIOK
-using Stm32f4PortK = Stm32f4Port<GPIOK_BASE>;
-#endif
+APRINTER_IF_DEFINED(GPIOA_BASE)(using Stm32PortA = Stm32Port<GPIOA_BASE>;)
+APRINTER_IF_DEFINED(GPIOB_BASE)(using Stm32PortB = Stm32Port<GPIOB_BASE>;)
+APRINTER_IF_DEFINED(GPIOC_BASE)(using Stm32PortC = Stm32Port<GPIOC_BASE>;)
+APRINTER_IF_DEFINED(GPIOD_BASE)(using Stm32PortD = Stm32Port<GPIOD_BASE>;)
+APRINTER_IF_DEFINED(GPIOE_BASE)(using Stm32PortE = Stm32Port<GPIOE_BASE>;)
+APRINTER_IF_DEFINED(GPIOF_BASE)(using Stm32PortF = Stm32Port<GPIOF_BASE>;)
+APRINTER_IF_DEFINED(GPIOG_BASE)(using Stm32PortG = Stm32Port<GPIOG_BASE>;)
+APRINTER_IF_DEFINED(GPIOH_BASE)(using Stm32PortH = Stm32Port<GPIOH_BASE>;)
+APRINTER_IF_DEFINED(GPIOI_BASE)(using Stm32PortI = Stm32Port<GPIOI_BASE>;)
+APRINTER_IF_DEFINED(GPIOJ_BASE)(using Stm32PortJ = Stm32Port<GPIOJ_BASE>;)
+APRINTER_IF_DEFINED(GPIOK_BASE)(using Stm32PortK = Stm32Port<GPIOK_BASE>;)
 
 template <typename TPort, int TPinIndex>
-struct Stm32f4Pin {
+struct Stm32Pin {
     using Port = TPort;
     static const int PinIndex = TPinIndex;
 };
 
 template <uint8_t TPupdr>
-struct Stm32f4PinPullMode {
+struct Stm32PinPullMode {
     static uint8_t const Pupdr = TPupdr;
 };
-using Stm32f4PinPullModeNone = Stm32f4PinPullMode<0>;
-using Stm32f4PinPullModePullUp = Stm32f4PinPullMode<1>;
-using Stm32f4PinPullModePullDown = Stm32f4PinPullMode<2>;
+using Stm32PinPullModeNone = Stm32PinPullMode<0>;
+using Stm32PinPullModePullUp = Stm32PinPullMode<1>;
+using Stm32PinPullModePullDown = Stm32PinPullMode<2>;
 
 template <uint8_t TOptyper>
-struct Stm32f4PinOutputType {
+struct Stm32PinOutputType {
     static uint8_t const Optyper = TOptyper;
 };
-using Stm32f4PinOutputTypeNormal = Stm32f4PinOutputType<0>;
-using Stm32f4PinOutputTypeOpenDrain = Stm32f4PinOutputType<1>;
+using Stm32PinOutputTypeNormal = Stm32PinOutputType<0>;
+using Stm32PinOutputTypeOpenDrain = Stm32PinOutputType<1>;
 
 template <uint8_t TOspeedr>
-struct Stm32f4PinOutputSpeed {
+struct Stm32PinOutputSpeed {
     static uint8_t const Ospeedr = TOspeedr;
 };
-using Stm32f4PinOutputSpeedLow = Stm32f4PinOutputSpeed<0>;
-using Stm32f4PinOutputSpeedMedium = Stm32f4PinOutputSpeed<1>;
-using Stm32f4PinOutputSpeedFast = Stm32f4PinOutputSpeed<2>;
-using Stm32f4PinOutputSpeedHigh = Stm32f4PinOutputSpeed<3>;
+using Stm32PinOutputSpeedLow = Stm32PinOutputSpeed<0>;
+using Stm32PinOutputSpeedMedium = Stm32PinOutputSpeed<1>;
+using Stm32PinOutputSpeedFast = Stm32PinOutputSpeed<2>;
+using Stm32PinOutputSpeedHigh = Stm32PinOutputSpeed<3>;
 
 template <typename PullMode>
-struct Stm32f4PinInputMode {
+struct Stm32PinInputMode {
     static uint8_t const Pupdr = PullMode::Pupdr;
 };
-using Stm32f4PinInputModeNormal = Stm32f4PinInputMode<Stm32f4PinPullModeNone>;
-using Stm32f4PinInputModePullUp = Stm32f4PinInputMode<Stm32f4PinPullModePullUp>;
-using Stm32f4PinInputModePullDown = Stm32f4PinInputMode<Stm32f4PinPullModePullDown>;
+using Stm32PinInputModeNormal = Stm32PinInputMode<Stm32PinPullModeNone>;
+using Stm32PinInputModePullUp = Stm32PinInputMode<Stm32PinPullModePullUp>;
+using Stm32PinInputModePullDown = Stm32PinInputMode<Stm32PinPullModePullDown>;
 
 template <typename OutputType, typename OutputSpeed, typename PullMode>
-struct Stm32f4PinOutputMode {
+struct Stm32PinOutputMode {
     static uint8_t const Optyper = OutputType::Optyper;
     static uint8_t const Ospeedr = OutputSpeed::Ospeedr;
     static uint8_t const Pupdr = PullMode::Pupdr;
 };
-using Stm32f4PinOutputModeNormal = Stm32f4PinOutputMode<Stm32f4PinOutputTypeNormal, Stm32f4PinOutputSpeedLow, Stm32f4PinPullModeNone>;
-using Stm32f4PinOutputModeOpenDrain = Stm32f4PinOutputMode<Stm32f4PinOutputTypeOpenDrain, Stm32f4PinOutputSpeedLow, Stm32f4PinPullModeNone>;
+using Stm32PinOutputModeNormal = Stm32PinOutputMode<Stm32PinOutputTypeNormal, Stm32PinOutputSpeedLow, Stm32PinPullModeNone>;
+using Stm32PinOutputModeOpenDrain = Stm32PinOutputMode<Stm32PinOutputTypeOpenDrain, Stm32PinOutputSpeedLow, Stm32PinPullModeNone>;
 
 template <typename Arg>
-class Stm32f4Pins {
+class Stm32Pins {
     using Context      = typename Arg::Context;
     using ParentObject = typename Arg::ParentObject;
     
@@ -123,27 +113,17 @@ private:
 public:
     static void init (Context c)
     {
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-        __HAL_RCC_GPIOD_CLK_ENABLE();
-        __HAL_RCC_GPIOE_CLK_ENABLE();
-#ifdef GPIOF
-        __HAL_RCC_GPIOF_CLK_ENABLE();
-#endif
-#ifdef GPIOG
-        __HAL_RCC_GPIOG_CLK_ENABLE();
-#endif
-        __HAL_RCC_GPIOH_CLK_ENABLE();
-#ifdef GPIOI
-        __HAL_RCC_GPIOI_CLK_ENABLE();
-#endif
-#ifdef GPIOJ
-        __HAL_RCC_GPIOJ_CLK_ENABLE();
-#endif
-#ifdef GPIOK
-        __HAL_RCC_GPIOK_CLK_ENABLE();
-#endif
+        APRINTER_IF_DEFINED(GPIOA_BASE)(__HAL_RCC_GPIOA_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOB_BASE)(__HAL_RCC_GPIOB_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOC_BASE)(__HAL_RCC_GPIOC_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOD_BASE)(__HAL_RCC_GPIOD_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOE_BASE)(__HAL_RCC_GPIOE_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOF_BASE)(__HAL_RCC_GPIOF_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOG_BASE)(__HAL_RCC_GPIOG_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOH_BASE)(__HAL_RCC_GPIOH_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOI_BASE)(__HAL_RCC_GPIOI_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOJ_BASE)(__HAL_RCC_GPIOJ_CLK_ENABLE());
+        APRINTER_IF_DEFINED(GPIOK_BASE)(__HAL_RCC_GPIOK_CLK_ENABLE());
         
         TheDebugObject::init(c);
     }
@@ -152,30 +132,20 @@ public:
     {
         TheDebugObject::deinit(c);
         
-#ifdef GPIOK
-        __HAL_RCC_GPIOK_CLK_DISABLE();
-#endif
-#ifdef GPIOJ
-        __HAL_RCC_GPIOJ_CLK_DISABLE();
-#endif
-#ifdef GPIOI
-        __HAL_RCC_GPIOI_CLK_DISABLE();
-#endif
-        __HAL_RCC_GPIOH_CLK_DISABLE();
-#ifdef GPIOG
-        __HAL_RCC_GPIOG_CLK_DISABLE();
-#endif
-#ifdef GPIOF
-        __HAL_RCC_GPIOF_CLK_DISABLE();
-#endif
-        __HAL_RCC_GPIOE_CLK_DISABLE();
-        __HAL_RCC_GPIOD_CLK_DISABLE();
-        __HAL_RCC_GPIOC_CLK_DISABLE();
-        __HAL_RCC_GPIOB_CLK_DISABLE();
-        __HAL_RCC_GPIOA_CLK_DISABLE();
+        APRINTER_IF_DEFINED(GPIOK_BASE)(__HAL_RCC_GPIOK_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOJ_BASE)(__HAL_RCC_GPIOJ_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOI_BASE)(__HAL_RCC_GPIOI_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOH_BASE)(__HAL_RCC_GPIOH_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOG_BASE)(__HAL_RCC_GPIOG_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOF_BASE)(__HAL_RCC_GPIOF_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOE_BASE)(__HAL_RCC_GPIOE_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOD_BASE)(__HAL_RCC_GPIOD_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOC_BASE)(__HAL_RCC_GPIOC_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOB_BASE)(__HAL_RCC_GPIOB_CLK_DISABLE());
+        APRINTER_IF_DEFINED(GPIOA_BASE)(__HAL_RCC_GPIOA_CLK_DISABLE());
     }
     
-    template <typename Pin, typename Mode = Stm32f4PinInputModeNormal, typename ThisContext>
+    template <typename Pin, typename Mode = Stm32PinInputModeNormal, typename ThisContext>
     static void setInput (ThisContext c)
     {
         TheDebugObject::access(c);
@@ -186,7 +156,7 @@ public:
         }
     }
     
-    template <typename Pin, typename Mode = Stm32f4PinOutputModeNormal, typename ThisContext>
+    template <typename Pin, typename Mode = Stm32PinOutputModeNormal, typename ThisContext>
     static void setOutput (ThisContext c)
     {
         TheDebugObject::access(c);
@@ -199,7 +169,7 @@ public:
         }
     }
     
-    template <typename Pin, int AfNumber, typename Mode = Stm32f4PinOutputModeNormal, typename ThisContext>
+    template <typename Pin, int AfNumber, typename Mode = Stm32PinOutputModeNormal, typename ThisContext>
     static void setAlternateFunction (ThisContext c)
     {
         TheDebugObject::access(c);
@@ -291,15 +261,15 @@ private:
     }
     
 public:
-    struct Object : public ObjBase<Stm32f4Pins, ParentObject, MakeTypeList<TheDebugObject>> {};
+    struct Object : public ObjBase<Stm32Pins, ParentObject, MakeTypeList<TheDebugObject>> {};
 };
 
-struct Stm32f4PinsService {
+struct Stm32PinsService {
     APRINTER_ALIAS_STRUCT_EXT(Pins, (
         APRINTER_AS_TYPE(Context),
         APRINTER_AS_TYPE(ParentObject)
     ), (
-        APRINTER_DEF_INSTANCE(Pins, Stm32f4Pins)
+        APRINTER_DEF_INSTANCE(Pins, Stm32Pins)
     ))
 };
 

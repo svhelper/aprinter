@@ -2749,14 +2749,14 @@
     {
       "platform_config": {
         "platform": {
-          "_compoundName": "Stm32f4",
+          "_compoundName": "Stm32",
           "adc": {
             "ClockDivider": 8,
             "SampleTimeSelection": 7,
-            "_compoundName": "Stm32f4Adc"
+            "_compoundName": "Stm32Adc"
           },
           "clock": {
-            "_compoundName": "Stm32f4Clock",
+            "_compoundName": "Stm32Clock",
             "avail_oc_units": [
               {
                 "value": "TIM2_1"
@@ -2847,18 +2847,18 @@
             "primary_timer": "TIM2"
           },
           "fast_clock": {
-            "_compoundName": "Stm32f4Clock",
+            "_compoundName": "Stm32Clock",
             "prescaler": 4,
             "primary_timer": "TIM5"
           },
           "pins": {
-            "_compoundName": "Stm32f4Pins",
-            "input_mode_type": "Stm32f4PinInputMode"
+            "_compoundName": "Stm32Pins",
+            "input_mode_type": "Stm32PinInputMode"
           },
           "watchdog": {
             "Divider": 16,
             "Reload": 4095,
-            "_compoundName": "Stm32f4Watchdog"
+            "_compoundName": "Stm32Watchdog"
           }
         },
         "_compoundName": "PlatformConfig",
@@ -2880,7 +2880,7 @@
         {
           "InputMode": {
             "PullMode": "Pull-up",
-            "_compoundName": "Stm32f4PinInputMode"
+            "_compoundName": "Stm32PinInputMode"
           },
           "Name": "ButtonUser",
           "Pin": "DiscoveryPinButtonUser",
@@ -2889,35 +2889,35 @@
         {
           "InputMode": {
             "PullMode": "Pull-up",
-            "_compoundName": "Stm32f4PinInputMode"
+            "_compoundName": "Stm32PinInputMode"
           },
           "Name": "PG9",
-          "Pin": "Stm32f4Pin<Stm32f4PortG,9>",
+          "Pin": "Stm32Pin<Stm32PortG,9>",
           "_compoundName": "digital_input"
         },
         {
           "InputMode": {
             "PullMode": "Pull-up",
-            "_compoundName": "Stm32f4PinInputMode"
+            "_compoundName": "Stm32PinInputMode"
           },
           "Name": "PB4",
-          "Pin": "Stm32f4Pin<Stm32f4PortB,4>",
+          "Pin": "Stm32Pin<Stm32PortB,4>",
           "_compoundName": "digital_input"
         },
         {
           "InputMode": {
             "PullMode": "Pull-up",
-            "_compoundName": "Stm32f4PinInputMode"
+            "_compoundName": "Stm32PinInputMode"
           },
           "Name": "PB7",
-          "Pin": "Stm32f4Pin<Stm32f4PortB,7>",
+          "Pin": "Stm32Pin<Stm32PortB,7>",
           "_compoundName": "digital_input"
         }
       ],
       "analog_inputs": [
         {
           "Driver": {
-            "Pin": "Stm32f4Pin<Stm32f4PortF,6>",
+            "Pin": "Stm32Pin<Stm32PortF,6>",
             "_compoundName": "AdcAnalogInput"
           },
           "Name": "PF6",
@@ -2925,7 +2925,7 @@
         },
         {
           "Driver": {
-            "Pin": "Stm32f4Pin<Stm32f4PortC,3>",
+            "Pin": "Stm32Pin<Stm32PortC,3>",
             "_compoundName": "AdcAnalogInput"
           },
           "Name": "PC3",
@@ -2933,7 +2933,7 @@
         },
         {
           "Driver": {
-            "Pin": "Stm32f4Pin<Stm32f4PortA,5>",
+            "Pin": "Stm32Pin<Stm32PortA,5>",
             "_compoundName": "AdcAnalogInput"
           },
           "Name": "PA5",
@@ -2944,7 +2944,7 @@
         {
           "Backend": {
             "OutputInvert": false,
-            "OutputPin": "Stm32f4Pin<Stm32f4PortG,14>",
+            "OutputPin": "Stm32Pin<Stm32PortG,14>",
             "PulseInterval": 0.01,
             "Timer": {
               "_compoundName": "interrupt_timer",
@@ -2958,7 +2958,7 @@
         {
           "Backend": {
             "OutputInvert": false,
-            "OutputPin": "Stm32f4Pin<Stm32f4PortE,3>",
+            "OutputPin": "Stm32Pin<Stm32PortE,3>",
             "PulseInterval": 0.01,
             "Timer": {
               "_compoundName": "interrupt_timer",
@@ -3044,19 +3044,19 @@
           "RecvBufferSizeExp": 9,
           "SendBufferSizeExp": 10,
           "Service": {
-            "_compoundName": "Stm32f4UsbSerial"
+            "_compoundName": "Stm32UsbSerial"
           },
           "_compoundName": "serial"
         }
       ],
       "stepper_ports": [
         {
-          "DirPin": "Stm32f4Pin<Stm32f4PortG,2>",
+          "DirPin": "Stm32Pin<Stm32PortG,2>",
           "EnableLevel": false,
-          "EnablePin": "Stm32f4Pin<Stm32f4PortB,2>",
+          "EnablePin": "Stm32Pin<Stm32PortB,2>",
           "Name": "X",
           "StepLevel": true,
-          "StepPin": "Stm32f4Pin<Stm32f4PortG,3>",
+          "StepPin": "Stm32Pin<Stm32PortG,3>",
           "StepperTimer": {
             "_compoundName": "interrupt_timer",
             "oc_unit": "TIM2_2"
@@ -3070,12 +3070,12 @@
           }
         },
         {
-          "DirPin": "Stm32f4Pin<Stm32f4PortD,7>",
+          "DirPin": "Stm32Pin<Stm32PortD,7>",
           "EnableLevel": false,
-          "EnablePin": "Stm32f4Pin<Stm32f4PortD,4>",
+          "EnablePin": "Stm32Pin<Stm32PortD,4>",
           "Name": "Y",
           "StepLevel": true,
-          "StepPin": "Stm32f4Pin<Stm32f4PortD,5>",
+          "StepPin": "Stm32Pin<Stm32PortD,5>",
           "StepperTimer": {
             "_compoundName": "interrupt_timer",
             "oc_unit": "TIM2_3"
@@ -3089,12 +3089,12 @@
           }
         },
         {
-          "DirPin": "Stm32f4Pin<Stm32f4PortC,8>",
+          "DirPin": "Stm32Pin<Stm32PortC,8>",
           "EnableLevel": false,
-          "EnablePin": "Stm32f4Pin<Stm32f4PortA,10>",
+          "EnablePin": "Stm32Pin<Stm32PortA,10>",
           "Name": "Z",
           "StepLevel": true,
-          "StepPin": "Stm32f4Pin<Stm32f4PortA,9>",
+          "StepPin": "Stm32Pin<Stm32PortA,9>",
           "StepperTimer": {
             "_compoundName": "interrupt_timer",
             "oc_unit": "TIM2_4"
@@ -3108,12 +3108,12 @@
           }
         },
         {
-          "DirPin": "Stm32f4Pin<Stm32f4PortC,11>",
+          "DirPin": "Stm32Pin<Stm32PortC,11>",
           "EnableLevel": false,
-          "EnablePin": "Stm32f4Pin<Stm32f4PortD,2>",
+          "EnablePin": "Stm32Pin<Stm32PortD,2>",
           "Name": "E",
           "StepLevel": true,
-          "StepPin": "Stm32f4Pin<Stm32f4PortC,12>",
+          "StepPin": "Stm32Pin<Stm32PortC,12>",
           "StepperTimer": {
             "_compoundName": "interrupt_timer",
             "oc_unit": "TIM3_1"
@@ -3131,14 +3131,14 @@
     {
       "platform_config": {
         "platform": {
-          "_compoundName": "Stm32f4",
+          "_compoundName": "Stm32",
           "adc": {
             "ClockDivider": 8,
             "SampleTimeSelection": 7,
-            "_compoundName": "Stm32f4Adc"
+            "_compoundName": "Stm32Adc"
           },
           "clock": {
-            "_compoundName": "Stm32f4Clock",
+            "_compoundName": "Stm32Clock",
             "avail_oc_units": [
               {
                 "value": "TIM2_1"
@@ -3229,24 +3229,24 @@
             "primary_timer": "TIM2"
           },
           "fast_clock": {
-            "_compoundName": "Stm32f4Clock",
+            "_compoundName": "Stm32Clock",
             "prescaler": 4,
             "primary_timer": "TIM5"
           },
           "pins": {
-            "_compoundName": "Stm32f4Pins",
-            "input_mode_type": "Stm32f4PinInputMode"
+            "_compoundName": "Stm32Pins",
+            "input_mode_type": "Stm32PinInputMode"
           },
           "watchdog": {
             "Divider": 16,
             "Reload": 4095,
-            "_compoundName": "Stm32f4Watchdog"
+            "_compoundName": "Stm32Watchdog"
           }
         },
         "_compoundName": "PlatformConfig",
         "board_for_build": "stm32f407",
         "board_helper_includes": [
-          "stm32f4discovery_pins"
+          "stm32discovery_pins"
         ],
         "debug_interface": {
           "_compoundName": "NoDebug"
@@ -3262,7 +3262,7 @@
         {
           "InputMode": {
             "PullMode": "Normal",
-            "_compoundName": "Stm32f4PinInputMode"
+            "_compoundName": "Stm32PinInputMode"
           },
           "Name": "ButtonUser",
           "Pin": "DiscoveryPinButtonUser",
@@ -3272,7 +3272,7 @@
       "analog_inputs": [
         {
           "Driver": {
-            "Pin": "Stm32f4Pin<Stm32f4PortA,2>",
+            "Pin": "Stm32Pin<Stm32PortA,2>",
             "_compoundName": "AdcAnalogInput"
           },
           "Name": "PA2",
@@ -3280,7 +3280,7 @@
         },
         {
           "Driver": {
-            "Pin": "Stm32f4Pin<Stm32f4PortA,3>",
+            "Pin": "Stm32Pin<Stm32PortA,3>",
             "_compoundName": "AdcAnalogInput"
           },
           "Name": "PA3",
@@ -3288,7 +3288,7 @@
         },
         {
           "Driver": {
-            "Pin": "Stm32f4Pin<Stm32f4PortB,0>",
+            "Pin": "Stm32Pin<Stm32PortB,0>",
             "_compoundName": "AdcAnalogInput"
           },
           "Name": "PB0",
@@ -3429,7 +3429,7 @@
               "DataTimeoutBusClocks": 72000000,
               "IsWideMode": true,
               "SdClockPrescaler": 0,
-              "_compoundName": "Stm32f4Sdio"
+              "_compoundName": "Stm32Sdio"
             },
             "_compoundName": "SdioSdCard"
           },
@@ -3443,19 +3443,19 @@
           "RecvBufferSizeExp": 9,
           "SendBufferSizeExp": 10,
           "Service": {
-            "_compoundName": "Stm32f4UsbSerial"
+            "_compoundName": "Stm32UsbSerial"
           },
           "_compoundName": "serial"
         }
       ],
       "stepper_ports": [
         {
-          "DirPin": "Stm32f4Pin<Stm32f4PortD,3>",
+          "DirPin": "Stm32Pin<Stm32PortD,3>",
           "EnableLevel": false,
-          "EnablePin": "Stm32f4Pin<Stm32f4PortD,7>",
+          "EnablePin": "Stm32Pin<Stm32PortD,7>",
           "Name": "X",
           "StepLevel": true,
-          "StepPin": "Stm32f4Pin<Stm32f4PortD,6>",
+          "StepPin": "Stm32Pin<Stm32PortD,6>",
           "StepperTimer": {
             "_compoundName": "interrupt_timer",
             "oc_unit": "TIM2_2"

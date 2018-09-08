@@ -22,8 +22,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef AMBROLIB_STM32F4_WATCHDOG_H
-#define AMBROLIB_STM32F4_WATCHDOG_H
+#ifndef AMBROLIB_STM32_WATCHDOG_H
+#define AMBROLIB_STM32_WATCHDOG_H
 
 #include <stdint.h>
 
@@ -36,7 +36,7 @@
 namespace APrinter {
 
 template <typename Arg>
-class Stm32f4Watchdog {
+class Stm32Watchdog {
     APRINTER_USE_TYPES1(Arg, (Context, ParentObject, Params))
     
     static uint32_t const PrescalerValue =
@@ -93,12 +93,12 @@ public:
     }
     
 public:
-    struct Object : public ObjBase<Stm32f4Watchdog, ParentObject, MakeTypeList<TheDebugObject>> {
+    struct Object : public ObjBase<Stm32Watchdog, ParentObject, MakeTypeList<TheDebugObject>> {
         IWDG_HandleTypeDef iwdg_handle;
     };
 };
 
-APRINTER_ALIAS_STRUCT_EXT(Stm32f4WatchdogService, (
+APRINTER_ALIAS_STRUCT_EXT(Stm32WatchdogService, (
     APRINTER_AS_VALUE(int, Divider),
     APRINTER_AS_VALUE(uint16_t, Reload)
 ), (
@@ -107,8 +107,8 @@ APRINTER_ALIAS_STRUCT_EXT(Stm32f4WatchdogService, (
         APRINTER_AS_TYPE(ParentObject),
         APRINTER_AS_VALUE(bool, DebugMode)
     ), (
-        using Params = Stm32f4WatchdogService;
-        APRINTER_DEF_INSTANCE(Watchdog, Stm32f4Watchdog)
+        using Params = Stm32WatchdogService;
+        APRINTER_DEF_INSTANCE(Watchdog, Stm32Watchdog)
     ))
 ))
 

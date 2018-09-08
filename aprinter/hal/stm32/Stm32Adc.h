@@ -22,8 +22,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef AMBROLIB_STM32F4_ADC_H
-#define AMBROLIB_STM32F4_ADC_H
+#ifndef AMBROLIB_STM32_ADC_H
+#define AMBROLIB_STM32_ADC_H
 
 #include <stdint.h>
 
@@ -37,12 +37,12 @@
 #include <aprinter/meta/ServiceUtils.h>
 #include <aprinter/base/Object.h>
 #include <aprinter/base/DebugObject.h>
-#include <aprinter/hal/stm32/Stm32f4Pins.h>
+#include <aprinter/hal/stm32/Stm32Pins.h>
 #include <aprinter/system/InterruptLock.h>
 
 namespace APrinter {
 
-#define STM32F4ADC_DEFINE_SUBADC(AdcDefName, AdcNumber, DmaNumber, DmaStreamNumber, DmaChannelNumber) \
+#define STM32ADC_DEFINE_SUBADC(AdcDefName, AdcNumber, DmaNumber, DmaStreamNumber, DmaChannelNumber) \
 struct AdcDefName { \
     using Number = WrapInt<AdcNumber>; \
     static void adc_clk_enable () { __HAL_RCC_ADC##AdcNumber##_CLK_ENABLE(); } \
@@ -54,7 +54,7 @@ struct AdcDefName { \
 };
 
 template <typename Arg>
-class Stm32f4Adc {
+class Stm32Adc {
     using Context        = typename Arg::Context;
     using ParentObject   = typename Arg::ParentObject;
     using ParamsPinsList = typename Arg::PinsList;
@@ -78,60 +78,83 @@ class Stm32f4Adc {
     template <int...Numbers>
     using AdcNumbers = MakeTypeList<WrapInt<Numbers>...>;
     
-#if defined(STM32F429xx) || defined(STM32F407xx)
-    STM32F4ADC_DEFINE_SUBADC(AdcDef1, 1, 2, 0, 0)
-    STM32F4ADC_DEFINE_SUBADC(AdcDef2, 2, 2, 2, 1)
-    STM32F4ADC_DEFINE_SUBADC(AdcDef3, 3, 2, 1, 2)
+#if defined(STM32F205xx)
+    STM32ADC_DEFINE_SUBADC(AdcDef1, 1, 2, 0, 0)
+    STM32ADC_DEFINE_SUBADC(AdcDef2, 2, 2, 2, 1)
+    STM32ADC_DEFINE_SUBADC(AdcDef3, 3, 2, 1, 2)
     using AdcDefList = MakeTypeList<AdcDef1, AdcDef2, AdcDef3>;
     using PinDefList = MakeTypeList<
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortF, 3>,  AdcMapping<AdcNumbers<3>,     9>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortF, 4>,  AdcMapping<AdcNumbers<3>,     14>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortF, 5>,  AdcMapping<AdcNumbers<3>,     15>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortF, 6>,  AdcMapping<AdcNumbers<3>,     4>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortF, 7>,  AdcMapping<AdcNumbers<3>,     5>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortF, 8>,  AdcMapping<AdcNumbers<3>,     6>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortF, 9>,  AdcMapping<AdcNumbers<3>,     7>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortF, 10>, AdcMapping<AdcNumbers<3>,     8>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC, 0>,  AdcMapping<AdcNumbers<1,2,3>, 10>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC, 1>,  AdcMapping<AdcNumbers<1,2,3>, 11>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC, 2>,  AdcMapping<AdcNumbers<1,2,3>, 12>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC, 3>,  AdcMapping<AdcNumbers<1,2,3>, 13>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA, 0>,  AdcMapping<AdcNumbers<1,2,3>, 0>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA, 1>,  AdcMapping<AdcNumbers<1,2,3>, 1>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA, 2>,  AdcMapping<AdcNumbers<1,2,3>, 2>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA, 3>,  AdcMapping<AdcNumbers<1,2,3>, 3>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA, 4>,  AdcMapping<AdcNumbers<1,2>,   4>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA, 5>,  AdcMapping<AdcNumbers<1,2>,   5>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA, 6>,  AdcMapping<AdcNumbers<1,2>,   6>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA, 7>,  AdcMapping<AdcNumbers<1,2>,   7>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC, 4>,  AdcMapping<AdcNumbers<1,2>,   14>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC, 5>,  AdcMapping<AdcNumbers<1,2>,   15>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortB, 0>,  AdcMapping<AdcNumbers<1,2>,   8>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortB, 1>,  AdcMapping<AdcNumbers<1,2>,   9>>
+        TypeDictEntry<Stm32Pin<Stm32PortA, 0>,  AdcMapping<AdcNumbers<1,2,3>, 0>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 1>,  AdcMapping<AdcNumbers<1,2,3>, 1>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 2>,  AdcMapping<AdcNumbers<1,2,3>, 2>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 3>,  AdcMapping<AdcNumbers<1,2,3>, 3>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 4>,  AdcMapping<AdcNumbers<1,2>,   4>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 5>,  AdcMapping<AdcNumbers<1,2>,   5>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 6>,  AdcMapping<AdcNumbers<1,2>,   6>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 7>,  AdcMapping<AdcNumbers<1,2>,   7>>,
+        TypeDictEntry<Stm32Pin<Stm32PortB, 0>,  AdcMapping<AdcNumbers<1,2>,   8>>,
+        TypeDictEntry<Stm32Pin<Stm32PortB, 1>,  AdcMapping<AdcNumbers<1,2>,   9>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 0>,  AdcMapping<AdcNumbers<1,2,3>, 10>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 1>,  AdcMapping<AdcNumbers<1,2,3>, 11>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 2>,  AdcMapping<AdcNumbers<1,2,3>, 12>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 3>,  AdcMapping<AdcNumbers<1,2,3>, 13>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 4>,  AdcMapping<AdcNumbers<1,2>,   14>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 5>,  AdcMapping<AdcNumbers<1,2>,   15>>
+    >;
+#elif defined(STM32F429xx) || defined(STM32F407xx)
+    STM32ADC_DEFINE_SUBADC(AdcDef1, 1, 2, 0, 0)
+    STM32ADC_DEFINE_SUBADC(AdcDef2, 2, 2, 2, 1)
+    STM32ADC_DEFINE_SUBADC(AdcDef3, 3, 2, 1, 2)
+    using AdcDefList = MakeTypeList<AdcDef1, AdcDef2, AdcDef3>;
+    using PinDefList = MakeTypeList<
+        TypeDictEntry<Stm32Pin<Stm32PortF, 3>,  AdcMapping<AdcNumbers<3>,     9>>,
+        TypeDictEntry<Stm32Pin<Stm32PortF, 4>,  AdcMapping<AdcNumbers<3>,     14>>,
+        TypeDictEntry<Stm32Pin<Stm32PortF, 5>,  AdcMapping<AdcNumbers<3>,     15>>,
+        TypeDictEntry<Stm32Pin<Stm32PortF, 6>,  AdcMapping<AdcNumbers<3>,     4>>,
+        TypeDictEntry<Stm32Pin<Stm32PortF, 7>,  AdcMapping<AdcNumbers<3>,     5>>,
+        TypeDictEntry<Stm32Pin<Stm32PortF, 8>,  AdcMapping<AdcNumbers<3>,     6>>,
+        TypeDictEntry<Stm32Pin<Stm32PortF, 9>,  AdcMapping<AdcNumbers<3>,     7>>,
+        TypeDictEntry<Stm32Pin<Stm32PortF, 10>, AdcMapping<AdcNumbers<3>,     8>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 0>,  AdcMapping<AdcNumbers<1,2,3>, 10>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 1>,  AdcMapping<AdcNumbers<1,2,3>, 11>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 2>,  AdcMapping<AdcNumbers<1,2,3>, 12>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 3>,  AdcMapping<AdcNumbers<1,2,3>, 13>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 0>,  AdcMapping<AdcNumbers<1,2,3>, 0>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 1>,  AdcMapping<AdcNumbers<1,2,3>, 1>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 2>,  AdcMapping<AdcNumbers<1,2,3>, 2>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 3>,  AdcMapping<AdcNumbers<1,2,3>, 3>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 4>,  AdcMapping<AdcNumbers<1,2>,   4>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 5>,  AdcMapping<AdcNumbers<1,2>,   5>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 6>,  AdcMapping<AdcNumbers<1,2>,   6>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA, 7>,  AdcMapping<AdcNumbers<1,2>,   7>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 4>,  AdcMapping<AdcNumbers<1,2>,   14>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC, 5>,  AdcMapping<AdcNumbers<1,2>,   15>>,
+        TypeDictEntry<Stm32Pin<Stm32PortB, 0>,  AdcMapping<AdcNumbers<1,2>,   8>>,
+        TypeDictEntry<Stm32Pin<Stm32PortB, 1>,  AdcMapping<AdcNumbers<1,2>,   9>>
     >;
 #elif defined(STM32F411xE)
-    STM32F4ADC_DEFINE_SUBADC(AdcDef1, 1, 2, 0, 0)
+    STM32ADC_DEFINE_SUBADC(AdcDef1, 1, 2, 0, 0)
     using AdcDefList = MakeTypeList<AdcDef1>;
     using PinDefList = MakeTypeList<
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC,0>,  AdcMapping<AdcNumbers<1>, 10>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC,1>,  AdcMapping<AdcNumbers<1>, 11>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC,2>,  AdcMapping<AdcNumbers<1>, 12>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC,3>,  AdcMapping<AdcNumbers<1>, 13>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA,0>,  AdcMapping<AdcNumbers<1>, 0>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA,1>,  AdcMapping<AdcNumbers<1>, 1>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA,2>,  AdcMapping<AdcNumbers<1>, 2>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA,3>,  AdcMapping<AdcNumbers<1>, 3>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA,4>,  AdcMapping<AdcNumbers<1>, 4>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA,5>,  AdcMapping<AdcNumbers<1>, 5>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA,6>,  AdcMapping<AdcNumbers<1>, 6>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortA,7>,  AdcMapping<AdcNumbers<1>, 7>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC,4>,  AdcMapping<AdcNumbers<1>, 14>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortC,5>,  AdcMapping<AdcNumbers<1>, 15>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortB,0>,  AdcMapping<AdcNumbers<1>, 8>>,
-        TypeDictEntry<Stm32f4Pin<Stm32f4PortB,1>,  AdcMapping<AdcNumbers<1>, 9>>
+        TypeDictEntry<Stm32Pin<Stm32PortC,0>,  AdcMapping<AdcNumbers<1>, 10>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC,1>,  AdcMapping<AdcNumbers<1>, 11>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC,2>,  AdcMapping<AdcNumbers<1>, 12>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC,3>,  AdcMapping<AdcNumbers<1>, 13>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA,0>,  AdcMapping<AdcNumbers<1>, 0>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA,1>,  AdcMapping<AdcNumbers<1>, 1>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA,2>,  AdcMapping<AdcNumbers<1>, 2>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA,3>,  AdcMapping<AdcNumbers<1>, 3>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA,4>,  AdcMapping<AdcNumbers<1>, 4>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA,5>,  AdcMapping<AdcNumbers<1>, 5>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA,6>,  AdcMapping<AdcNumbers<1>, 6>>,
+        TypeDictEntry<Stm32Pin<Stm32PortA,7>,  AdcMapping<AdcNumbers<1>, 7>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC,4>,  AdcMapping<AdcNumbers<1>, 14>>,
+        TypeDictEntry<Stm32Pin<Stm32PortC,5>,  AdcMapping<AdcNumbers<1>, 15>>,
+        TypeDictEntry<Stm32Pin<Stm32PortB,0>,  AdcMapping<AdcNumbers<1>, 8>>,
+        TypeDictEntry<Stm32Pin<Stm32PortB,1>,  AdcMapping<AdcNumbers<1>, 9>>
     >;
 #else
-#error Chip not supported by Stm32f4Adc
+#error Chip not supported by Stm32Adc
 #endif
     
     template <typename AdcNumber>
@@ -295,7 +318,7 @@ private:
         };
         using AdcPinList = IndexElemList<AssignedPinIndices, AdcPin>;
         
-        struct Object : public ObjBase<Adc, typename Stm32f4Adc::Object, EmptyTypeList> {
+        struct Object : public ObjBase<Adc, typename Stm32Adc::Object, EmptyTypeList> {
             DMA_HandleTypeDef dma;
             uint16_t adc_values[NumAdcPins];
         };
@@ -364,13 +387,13 @@ public:
     }
     
 public:
-    struct Object : public ObjBase<Stm32f4Adc, ParentObject, JoinTypeLists<
+    struct Object : public ObjBase<Stm32Adc, ParentObject, JoinTypeLists<
         UsedAdcList,
         MakeTypeList<TheDebugObject>
     >> {};
 };
 
-APRINTER_ALIAS_STRUCT_EXT(Stm32f4AdcService, (
+APRINTER_ALIAS_STRUCT_EXT(Stm32AdcService, (
     APRINTER_AS_VALUE(int, ClockDivider),
     APRINTER_AS_VALUE(int, SampleTimeSelection)
 ), (
@@ -379,12 +402,12 @@ APRINTER_ALIAS_STRUCT_EXT(Stm32f4AdcService, (
         APRINTER_AS_TYPE(ParentObject),
         APRINTER_AS_TYPE(PinsList)
     ), (
-        using Params = Stm32f4AdcService;
-        APRINTER_DEF_INSTANCE(Adc, Stm32f4Adc)
+        using Params = Stm32AdcService;
+        APRINTER_DEF_INSTANCE(Adc, Stm32Adc)
     ))
 ))
 
-#define APRINTER_STM32F4_ADC_GLOBAL(adc, context) \
+#define APRINTER_STM32_ADC_GLOBAL(adc, context) \
 extern "C" \
 __attribute__((used)) \
 void ADC_IRQHandler (void) \
