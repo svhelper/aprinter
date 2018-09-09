@@ -94,15 +94,15 @@ rec {
         platform = "stm32";
         targetVars = {
             STM_CHIP = "stm32f205";
-            HSE_VALUE = "16000000";
-            PLL_N_VALUE = "240";
-            PLL_M_VALUE = "16";
+            ARM_CPU = "cortex-m3";
+            CHIP_FLAGS = "-DSTM32F405xx";   # the closest compatible chip from the higher family line
+            PLL_N_VALUE = "(FCPU_VALUE * PLL_P_DIV_VALUE / 1000000UL)";
+            PLL_M_VALUE = "(HSE_VALUE / 1000000UL)";
             PLL_P_DIV_VALUE = "2";
             PLL_Q_DIV_VALUE = "5";
             APB1_PRESC_DIV = "4";
             APB2_PRESC_DIV = "2";
             USB_MODE = "FS";
-            ENABLE_SDCARD = "YES";
         };
     };
 
@@ -110,9 +110,10 @@ rec {
         platform = "stm32";
         targetVars = {
             STM_CHIP = "stm32f429";
-            HSE_VALUE = "8000000";
-            PLL_N_VALUE = "336";
-            PLL_M_VALUE = "8";
+            ARM_CPU = "cortex-m4";
+            CHIP_FLAGS = "-DSTM32F429xx";
+            PLL_N_VALUE = "(FCPU_VALUE * PLL_P_DIV_VALUE / 1000000UL)";
+            PLL_M_VALUE = "(HSE_VALUE / 1000000UL)";
             PLL_P_DIV_VALUE = "2";
             PLL_Q_DIV_VALUE = "7";
             APB1_PRESC_DIV = "4";
@@ -125,15 +126,15 @@ rec {
         platform = "stm32";
         targetVars = {
             STM_CHIP = "stm32f407";
-            HSE_VALUE = "8000000";
-            PLL_N_VALUE = "336";
-            PLL_M_VALUE = "8";
+            ARM_CPU = "cortex-m4";
+            CHIP_FLAGS = "-DSTM32F407xx";
+            PLL_N_VALUE = "(FCPU_VALUE * PLL_P_DIV_VALUE / 1000000UL)";
+            PLL_M_VALUE = "(HSE_VALUE / 1000000UL)";
             PLL_P_DIV_VALUE = "2";
             PLL_Q_DIV_VALUE = "7";
             APB1_PRESC_DIV = "4";
             APB2_PRESC_DIV = "2";
             USB_MODE = "FS";
-            ENABLE_SDCARD = "YES";
         };
     };
 
@@ -141,9 +142,10 @@ rec {
         platform = "stm32";
         targetVars = {
             STM_CHIP = "stm32f411";
-            HSE_VALUE = "8000000";
-            PLL_N_VALUE = "192";
-            PLL_M_VALUE = "4";
+            ARM_CPU = "cortex-m4";
+            CHIP_FLAGS = "-DSTM32F411xE";
+            PLL_N_VALUE = "(FCPU_VALUE * PLL_P_DIV_VALUE / 1000000UL)";
+            PLL_M_VALUE = "(HSE_VALUE / 1000000UL)";
             PLL_P_DIV_VALUE = "4";
             PLL_Q_DIV_VALUE = "8";
             APB1_PRESC_DIV = "4";

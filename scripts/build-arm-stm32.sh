@@ -32,27 +32,7 @@ configure_stm32() {
     HAL_DIR=${STM32CUBEF4_DIR}/Drivers/STM32F4xx_HAL_Driver
     USB_DIR=${STM32CUBEF4_DIR}/Middlewares/ST/STM32_USB_Device_Library
 
-    if [[ $STM_CHIP = "stm32f429" ]]; then
-        ARM_CPU=cortex-m4
-        CHIP_FLAGS=( -DSTM32F429xx )
-        STARTUP_ASM_FILE=startup_stm32f4xx.s
-    elif [[ $STM_CHIP = "stm32f407" ]]; then
-        ARM_CPU=cortex-m4
-        CHIP_FLAGS=( -DSTM32F407xx )
-        STARTUP_ASM_FILE=startup_stm32f4xx.s
-    elif [[ $STM_CHIP = "stm32f411" ]]; then
-        ARM_CPU=cortex-m4
-        CHIP_FLAGS=( -DSTM32F411xE )
-        STARTUP_ASM_FILE=startup_stm32f4xe.s
-    elif [[ $STM_CHIP = "stm32f205" ]] || [[ $STM_CHIP = "stm32f215" ]]; then
-        ARM_CPU=cortex-m3
-        CHIP_FLAGS=( -DSTM32F405xx -DSTM32F205xx )
-        STARTUP_ASM_FILE=startup_stm32f2xx.s
-    else
-        fail "Unsupported STM_CHIP"
-    fi
-
-    LINKER_SCRIPT=${ROOT}/aprinter/platform/stm32/${STM_CHIP}.ld
+    LINKER_SCRIPT=${ROOT}/aprinter/platform/stm32/stm32.ld
     
     configure_arm
     
@@ -100,9 +80,9 @@ configure_stm32() {
     FLAGS_C_CXX+=(
         "${CHIP_FLAGS[@]}"
         -DUSE_HAL_DRIVER -DHEAP_SIZE=16384
-        -DHSE_VALUE=${HSE_VALUE} -DPLL_N_VALUE=${PLL_N_VALUE} -DPLL_M_VALUE=${PLL_M_VALUE}
-        -DPLL_P_DIV_VALUE=${PLL_P_DIV_VALUE} -DPLL_Q_DIV_VALUE=${PLL_Q_DIV_VALUE}
-        -DAPB1_PRESC_DIV=${APB1_PRESC_DIV} -DAPB2_PRESC_DIV=${APB2_PRESC_DIV}
+        "-DPLL_N_VALUE=${PLL_N_VALUE}" "-DPLL_M_VALUE=${PLL_M_VALUE}"
+        "-DPLL_P_DIV_VALUE=${PLL_P_DIV_VALUE}" "-DPLL_Q_DIV_VALUE=${PLL_Q_DIV_VALUE}"
+        "-DAPB1_PRESC_DIV=${APB1_PRESC_DIV}" "-DAPB2_PRESC_DIV=${APB2_PRESC_DIV}"
         "${USB_FLAGS[@]}"
         -I "${ROOT}/aprinter/platform/stm32"
         -I "${CMSIS_DIR}/Include"
@@ -127,7 +107,7 @@ configure_stm32() {
         "${USB_C_SOURCES[@]}" "${SDCARD_C_SOURCES[@]}"
     )
     ASM_SOURCES+=(
-        "${ROOT}/aprinter/platform/stm32/${STARTUP_ASM_FILE}"
+        "${ROOT}/aprinter/platform/stm32/startup_stm32.s"
     )
 
     # define target functions

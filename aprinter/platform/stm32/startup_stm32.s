@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file      startup_stm32f429xx.s
+  * @file      startup_stm32.s
   * @author    MCD Application Team
   * @version   V2.5.1
   * @date      28-June-2016 
@@ -44,8 +44,9 @@
   */
     
   .syntax unified
-  .cpu cortex-m4
-  .fpu softvfp
+/* Use command line args for genetartion of code */
+/*  .cpu cortex-m4 */
+/*  .fpu softvfp */
   .thumb
 
 .global  g_pfnVectors

@@ -56,6 +56,9 @@ public:
 private:
     using TheDebugObject = DebugObject<Context, Object>;
     
+    static size_t const UsbCoreClock = (size_t)(((double)HSE_VALUE * PLL_N_VALUE) / ((double)PLL_Q_DIV_VALUE * PLL_M_VALUE));
+    static_assert(UsbCoreClock == 48000000, "Unable to configure USB clock using defined 'CPU core clock'");
+
     static size_t const UsbRxBufferSize = 1024;
     static_assert(UsbRxBufferSize >= CDC_DATA_HS_OUT_PACKET_SIZE, "");
     static_assert(UsbRxBufferSize >= CDC_DATA_FS_OUT_PACKET_SIZE, "");

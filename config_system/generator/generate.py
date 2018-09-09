@@ -891,6 +891,22 @@ def setup_pwm(gen, config, key):
     pwm_expr = config.do_selection(key, pwm_sel)
     if pwm_expr is not None:
         gen.add_global_resource(25, 'MyPwm', pwm_expr, context_name='Pwm')
+    
+def setup_core(gen, config, key):
+    core_sel = selection.Selection()
+    
+    @core_sel.option('Stm32Core')
+    def option(core_config):
+        gen.add_define('FCPU_VALUE', core_config.get_int('FCPU_VALUE'))
+        gen.add_define('HSE_VALUE', core_config.get_int('HSE_VALUE'))
+        gen.add_define('CPU_RAM', core_config.get_string('CPU_RAM'))
+        gen.add_define('CPU_CCMRAM', core_config.get_string('CPU_CCMRAM'))
+        gen.add_define('CPU_FLASH', core_config.get_string('CPU_FLASH'))
+        gen.add_linker_symbol('CPU_RAM', core_config.get_string('CPU_RAM'))
+        gen.add_linker_symbol('CPU_CCMRAM', core_config.get_string('CPU_CCMRAM'))
+        gen.add_linker_symbol('CPU_FLASH', core_config.get_string('CPU_FLASH'))
+    
+    config.do_selection(key, core_sel)
 
 def use_input_mode (config, key):
     im_sel = selection.Selection()
@@ -1049,6 +1065,7 @@ def use_sdio (gen, config, key, user):
     
     @sdio_sel.option('Stm32Sdio')
     def option(sdio_config):
+        gen.add_build_var('ENABLE_SDCARD', 'YES')
         gen.add_aprinter_include('hal/stm32/Stm32Sdio.h')
         gen.add_isr('APRINTER_STM32_SDIO_GLOBAL({}, Context())'.format(user))
         return TemplateExpr('Stm32SdioService', [
@@ -1514,7 +1531,7 @@ def generate(config_root_data, cfg_name, main_template):
                     if not re.match('\\A[a-zA-Z0-9_]{1,128}\\Z', board_for_build):
                         platform_config.key_path('board_for_build').error('Incorrect format.')
                     gen.add_subst('BoardForBuild', board_for_build)
-                    
+
                     output_types = []
                     for output_types_config in platform_config.enter_config('output_types'):
                         if output_types_config.get_bool('output_elf'):
@@ -1536,6 +1553,8 @@ def generate(config_root_data, cfg_name, main_template):
                             setup_clock(gen, platform, 'fast_clock', clock_name='FastClock', priority=-12, allow_disabled=True)
                         if platform.has('millisecond_clock'):
                             setup_millisecond_clock(gen, platform, 'millisecond_clock', priority=-13)
+                        if platform.has('core'):
+                            setup_core(gen, platform, 'core')
                     
                     setup_debug_interface(gen, platform_config, 'debug_interface')
                     

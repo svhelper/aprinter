@@ -272,6 +272,13 @@ def platform_Avr(variant):
 
 def platform_Stm32():
     return ce.Compound('Stm32', attrs=[
+        ce.Compound('Stm32Core', key='core', title='CPU and Board', collapsable=True, attrs=[
+            ce.Integer(key='FCPU_VALUE', title='CPU core clock (dependent on CPU model; in Hz)'),
+            ce.Integer(key='HSE_VALUE', title='Frequency of onboard crystal (in Hz)'),
+            ce.String(key='CPU_RAM', title='Total CPU RAM size (acceptable formats: 0x20000; 131072; 128K)'),
+            ce.String(key='CPU_CCMRAM', title='Total CPU CCMRAM size (acceptable formats: 0x10000; 65535; 64K)'),
+            ce.String(key='CPU_FLASH', title='Total CPU FLASH size (acceptable formats: 0x100000; 1048576; 1024K; 1M)')
+        ]),
         ce.Compound('Stm32Clock', key='clock', title='Clock', collapsable=True, attrs=[
             ce.Integer(key='prescaler', title='Prescaler'),
             ce.String(key='primary_timer', title='Primary timer'),

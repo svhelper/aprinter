@@ -2846,6 +2846,14 @@
             "prescaler": 35,
             "primary_timer": "TIM2"
           },
+          "core": {
+            "CPU_FLASH": "2048K",
+            "CPU_RAM": "192K",
+            "CPU_CCMRAM": "64K",
+            "FCPU_VALUE": 168000000,
+            "HSE_VALUE": 8000000,
+            "_compoundName": "Stm32Core"
+          },
           "fast_clock": {
             "_compoundName": "Stm32Clock",
             "prescaler": 4,
@@ -3227,6 +3235,14 @@
             ],
             "prescaler": 35,
             "primary_timer": "TIM2"
+          },
+          "core": {
+            "CPU_FLASH": "1024K",
+            "CPU_RAM": "128K",
+            "CPU_CCMRAM": "64K",
+            "FCPU_VALUE": 168000000,
+            "HSE_VALUE": 8000000,
+            "_compoundName": "Stm32Core"
           },
           "fast_clock": {
             "_compoundName": "Stm32Clock",
